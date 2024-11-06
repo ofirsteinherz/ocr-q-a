@@ -37,9 +37,9 @@
                 {
                     "label": "תאריך הפגיעה",
                     "value": "3  4  5  3  2  4  4  4",
-                    "x": 275,
-                    "y": 200,
-                    "font_size": 12,
+                    "x": 248,
+                    "y": 180,
+                    "font_size": 11,
                     "type": "date"
                 }
             ]
@@ -51,33 +51,33 @@
                 {
                     "label": "שם משפחה",
                     "value": "טננבוים",
-                    "x": 0,
-                    "y": 0,
+                    "x": 450,
+                    "y": 250,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "שם פרטי",
                     "value": "יהודה",
-                    "x": 0,
-                    "y": 0,
+                    "x": 280,
+                    "y": 250,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "ת.ז",
-                    "value": "877524563",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
+                    "value": "8  7  7  5  2  4  5  6  3  1",
+                    "x": 76,
+                    "y": 250,
+                    "font_size": 13,
                     "type": "text"
                 },
                 {
                     "label": "תאריך לידה",
-                    "value": "02 02 1995",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
+                    "value": "0 2 0 2 1 9 9 5",
+                    "x": 170,
+                    "y": 290,
+                    "font_size": 15,
                     "type": "date"
                 },
                 {
@@ -86,16 +86,16 @@
                         {
                             "label": "זכר",
                             "value": "V",
-                            "x": 0,
-                            "y": 0,
+                            "x": 505,
+                            "y": 290,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "נקבה",
                             "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "x": 456,
+                            "y": 290,
                             "font_size": 12,
                             "type": "checkbox"
                         }
@@ -104,65 +104,65 @@
                 {
                     "label": "רחוב",
                     "value": "הרמב״ם",
-                    "x": 0,
-                    "y": 0,
+                    "x": 417,
+                    "y": 348,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "מס' בית",
                     "value": "16",
-                    "x": 0,
-                    "y": 0,
+                    "x": 360,
+                    "y": 348,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "כניסה",
                     "value": "1",
-                    "x": 0,
-                    "y": 0,
+                    "x": 313,
+                    "y": 348,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "דירה",
                     "value": "12",
-                    "x": 0,
-                    "y": 0,
+                    "x": 260,
+                    "y": 348,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "יישוב",
                     "value": "אבן יהודה",
-                    "x": 0,
-                    "y": 0,
+                    "x": 120,
+                    "y": 348,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "מיקוד",
                     "value": "312422",
-                    "x": 0,
-                    "y": 0,
+                    "x": 50,
+                    "y": 348,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "טלפון קווי",
-                    "value": "",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
+                    "value": "1  2  3  4  5  6  7  8  2  3",
+                    "x": 360,
+                    "y": 385,
+                    "font_size": 11.5,
                     "type": "phone_number"
                 },
                 {
                     "label": "טלפון נייד",
-                    "value": "0502474947",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
+                    "value": "0  5  0  2  4  7  4  9  4  7",
+                    "x": 105,
+                    "y": 385,
+                    "font_size": 11.5,
                     "type": "phone_number"
                 }
             ]
@@ -174,25 +174,25 @@
                 {
                     "label": "בתאריך",
                     "value": "16.04.2022",
-                    "x": 0,
-                    "y": 0,
+                    "x": 429,
+                    "y": 440,
                     "font_size": 12,
                     "type": "date"
                 },
                 {
                     "label": "בשעה",
                     "value": "19:00",
-                    "x": 0,
-                    "y": 0,
+                    "x": 333,
+                    "y": 440,
                     "font_size": 12,
                     "type": "time"
                 },
                 {
                     "label": "כאשר עבדתי ב",
                     "value": "מלצרות",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
+                    "x": 100,
+                    "y": 440,
+                     "font_size": 12,
                     "type": "text"
                 },
                 {
@@ -201,40 +201,40 @@
                         {
                             "label": "מפעל",
                             "value": "V",
-                            "x": 0,
-                            "y": 0,
+                            "x": 485,
+                            "y": 470,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "ת. דרכים בעבודה",
-                            "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "value": "V",
+                            "x": 437,
+                            "y": 470,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "ת. דרכים בדרך לעבודה/מהעבודה",
-                            "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "value": "V",
+                            "x": 355,
+                            "y": 470,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "תאונה בדרך לא רכב",
-                            "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "value": "V",
+                            "x": 215,
+                            "y": 470,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "אחר",
-                            "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "value": "V",
+                            "x": 118,
+                            "y": 470,
                             "font_size": 12,
                             "type": "checkbox"
                         }
@@ -243,24 +243,24 @@
                 {
                     "label": "כתובת מקום התאונה",
                     "value": "הירדן 8, תל אביב",
-                    "x": 0,
-                    "y": 0,
+                    "x": 137,
+                    "y": 500,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "נסיבות הפגיעה / תיאור התאונה",
                     "value": "החלקתי בגלל שהרצפה היתה רטובה ולא היה שום שלט אזהרה.",
-                    "x": 0,
-                    "y": 0,
+                    "x": 75,
+                    "y": 520,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "האיבר שנפגע",
                     "value": "יד שמאל",
-                    "x": 0,
-                    "y": 0,
+                    "x": 200,
+                    "y": 564,
                     "font_size": 12,
                     "type": "text"
                 }
@@ -271,26 +271,18 @@
             "title": "הצהרה",
             "fields": [
                 {
-                    "label": "הצהרה",
-                    "value": "אני החתום מטה מצהיר כי אני רשום במוסד כעובד עצמאי וכי כל הפרטים שמסרתי לעיל הם נכונים ומלאים",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
-                    "type": "text"
-                },
-                {
                     "label": "שם המבקש",
                     "value": "טננבוים יהודה",
-                    "x": 0,
-                    "y": 0,
+                    "x": 400,
+                    "y": 660,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "חתימה",
                     "value": "signed",
-                    "x": 0,
-                    "y": 0,
+                    "x": 80,
+                    "y": 660,
                     "font_size": 12,
                     "type": "text"
                 }
@@ -306,16 +298,16 @@
                         {
                             "label": "הנפגע חבר בקופת חולים",
                             "value": "V",
-                            "x": 0,
-                            "y": 0,
+                            "x": 525,
+                            "y": 716,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "הנפגע אינו חבר בקופת חולים",
-                            "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "value": "V",
+                            "x": 525,
+                            "y": 735,
                             "font_size": 12,
                             "type": "checkbox"
                         }
@@ -326,43 +318,51 @@
                     "sub_fields": [
                         {
                             "label": "כללית",
-                            "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "value": "V",
+                            "x": 410,
+                            "y": 717,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "מאוחדת",
                             "value": "V",
-                            "x": 0,
-                            "y": 0,
+                            "x": 366,
+                            "y": 717,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "מכבי",
-                            "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "value": "V",
+                            "x": 312,
+                            "y": 717,
                             "font_size": 12,
                             "type": "checkbox"
                         },
                         {
                             "label": "לאומית",
-                            "value": "",
-                            "x": 0,
-                            "y": 0,
+                            "value": "V",
+                            "x": 272,
+                            "y": 717,
                             "font_size": 12,
                             "type": "checkbox"
                         }
                     ]
                 },
                 {
-                    "label": "מספר האישור (אסמכתא רפואית)",
-                    "value": "",
-                    "x": 0,
-                    "y": 0,
+                    "label": "אבחנה רפואית 1",
+                    "value": "2  3  4  4",
+                    "x": 320,
+                    "y": 752,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "אבחנה רפואית 2",
+                    "value": "2  3  4  4",
+                    "x": 232,
+                    "y": 752,
                     "font_size": 12,
                     "type": "text"
                 }
