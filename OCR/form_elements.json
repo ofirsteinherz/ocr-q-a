@@ -5,50 +5,26 @@
             "title": "",
             "fields": [
                 {
-                    "label": "המוסד לביטוח לאומי",
-                    "value": "המוסד לביטוח לאומי",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
-                    "type": "text"
-                },
-                {
-                    "label": "מינהל הגמלאות",
-                    "value": "מינהל הגמלאות",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
-                    "type": "text"
-                },
-                {
-                    "label": "בקשה למתן טיפול רפואי לנפגע עבודה - עצמאי",
-                    "value": "בקשה למתן טיפול רפואי לנפגע עבודה - עצמאי",
-                    "x": 0,
-                    "y": 0,
-                    "font_size": 12,
-                    "type": "text"
-                },
-                {
                     "label": "אל קופ״ח/בי״ח",
                     "value": "מאיר כפ״ס",
-                    "x": 0,
-                    "y": 0,
+                    "x": 375,
+                    "y": 130,
                     "font_size": 12,
                     "type": "text"
                 },
                 {
                     "label": "תאריך מילוי הטופס",
-                    "value": "25 01 2023",
-                    "x": 0,
-                    "y": 0,
+                    "value": "3  4  5  3  2  4  4  4",
+                    "x": 65,
+                    "y": 98,
                     "font_size": 12,
                     "type": "date"
                 },
                 {
                     "label": "תאריך קבלת הטופס בקופה",
-                    "value": "02 02 1999",
-                    "x": 0,
-                    "y": 0,
+                    "value": "3  4  5  3  2  4  4  4",
+                    "x": 213,
+                    "y": 102,
                     "font_size": 12,
                     "type": "date"
                 }
@@ -60,9 +36,9 @@
             "fields": [
                 {
                     "label": "תאריך הפגיעה",
-                    "value": "16 04 2022",
-                    "x": 0,
-                    "y": 0,
+                    "value": "3  4  5  3  2  4  4  4",
+                    "x": 275,
+                    "y": 200,
                     "font_size": 12,
                     "type": "date"
                 }
@@ -109,8 +85,7 @@
                     "sub_fields": [
                         {
                             "label": "זכר",
-                            "value": "",
-                            "selected": true,
+                            "value": "V",
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -119,7 +94,6 @@
                         {
                             "label": "נקבה",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -226,8 +200,7 @@
                     "sub_fields": [
                         {
                             "label": "מפעל",
-                            "value": "",
-                            "selected": true,
+                            "value": "V",
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -236,7 +209,6 @@
                         {
                             "label": "ת. דרכים בעבודה",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -245,7 +217,6 @@
                         {
                             "label": "ת. דרכים בדרך לעבודה/מהעבודה",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -254,7 +225,6 @@
                         {
                             "label": "תאונה בדרך לא רכב",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -263,7 +233,6 @@
                         {
                             "label": "אחר",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -336,8 +305,7 @@
                     "sub_fields": [
                         {
                             "label": "הנפגע חבר בקופת חולים",
-                            "value": "",
-                            "selected": true,
+                            "value": "V",
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -346,7 +314,6 @@
                         {
                             "label": "הנפגע אינו חבר בקופת חולים",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -360,7 +327,6 @@
                         {
                             "label": "כללית",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -368,8 +334,7 @@
                         },
                         {
                             "label": "מאוחדת",
-                            "value": "",
-                            "selected": true,
+                            "value": "V",
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -378,7 +343,6 @@
                         {
                             "label": "מכבי",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
@@ -387,7 +351,6 @@
                         {
                             "label": "לאומית",
                             "value": "",
-                            "selected": false,
                             "x": 0,
                             "y": 0,
                             "font_size": 12,
