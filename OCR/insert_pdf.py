@@ -4,14 +4,50 @@ from io import BytesIO
 import os
 import json
 
-def add_text_to_pdf(input_pdf, output_pdf, text_data_json, zoom=2):
-    # Rest of the function remains the same as before
-    if isinstance(text_data_json, str):
-        text_data = json.loads(text_data_json)
-    else:
-        text_data = text_data_json
+def flatten_json_elements(json_data):
+    """Flatten nested JSON structure into a list of elements with x,y coordinates"""
+    flattened_elements = []
+    
+    # Process each section
+    for section in json_data.get("sections", []):
+        # Process each field in the section
+        for field in section.get("fields", []):
+            # Check if field has sub_fields
+            if "sub_fields" in field:
+                for sub_field in field["sub_fields"]:
+                    if sub_field.get("x", 0) != 0 or sub_field.get("y", 0) != 0:
+                        flattened_elements.append({
+                            "text": sub_field.get("value", ""),
+                            "x": sub_field.get("x", 0),
+                            "y": sub_field.get("y", 0),
+                            "font_size": sub_field.get("font_size", 12),
+                            "label": sub_field.get("label", "")
+                        })
+            else:
+                # Process regular field
+                if field.get("x", 0) != 0 or field.get("y", 0) != 0:
+                    flattened_elements.append({
+                        "text": field.get("value", ""),
+                        "x": field.get("x", 0),
+                        "y": field.get("y", 0),
+                        "font_size": field.get("font_size", 12),
+                        "label": field.get("label", "")
+                    })
+    
+    return flattened_elements
 
+def add_text_to_pdf(input_pdf, output_pdf, form_elements_path, zoom=2):
     try:
+        # Read form elements from file
+        with open(form_elements_path, 'r', encoding='utf-8') as f:
+            form_data = json.load(f)
+        
+        # Flatten the nested JSON structure
+        flattened_elements = flatten_json_elements(form_data)
+        
+        # Create text_data in the format expected by the PDF processing
+        text_data = {"0": flattened_elements}  # Assuming all elements go on first page
+        
         # Create a single font instance that will be reused
         font = ImageFont.truetype("/usr/share/fonts/dejavu/DejaVuSans.ttf", int(12 * zoom))
         
@@ -29,6 +65,10 @@ def add_text_to_pdf(input_pdf, output_pdf, text_data_json, zoom=2):
             if str(page_num) in text_data:
                 for text_item in text_data[str(page_num)]:
                     try:
+                        # Skip items with x=0 and y=0
+                        if text_item["x"] == 0 and text_item["y"] == 0:
+                            continue
+                            
                         x = text_item["x"] * zoom
                         y = text_item["y"] * zoom
                         
@@ -57,79 +97,14 @@ def add_text_to_pdf(input_pdf, output_pdf, text_data_json, zoom=2):
     except Exception as e:
         raise Exception(f"Error processing PDF: {str(e)}")
 
-# Your text data remains the same
-text_data = {
-    "0": [
-        {
-            "text": "1  2  2  2  2  2  2  2",
-            "x": 65,
-            "y": 95,
-            "font_size": 12,
-            "label": "Data filling form" 
-        },
-        {
-            "text": "1  2  2  2  2  2  2  2",
-            "x": 213,
-            "y": 100,
-            "font_size": 12,
-            "label": "invoice_number"
-        }
-    ],
-    "1": [
-        {
-            "text": "Another Text",
-            "x": 150,
-            "y": 350,
-            "font_size": 14,
-            "label": "total_amount"
-        }
-    ]
-}
-
-# Debug prints
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Correct paths - looking in the 'files' subfolder
 input_pdf = os.path.join(script_dir, "files", "283_raw.pdf")
 output_pdf = os.path.join(script_dir, "files", "output_high_res.pdf")
+form_elements_path = os.path.join(script_dir, "form_elements.json")
 
 try:
-    json_string = json.dumps(text_data, indent=2)
-    add_text_to_pdf(input_pdf, output_pdf, json_string, zoom=3)
-except Exception as e:
-    print(f"Error: {str(e)}")
-
-# Example usage
-text_data = {
-    "0": [
-        {
-            "text": "1  2  2  2  2  2  2  2",
-            "x": 65,
-            "y": 95,
-            "font_size": 12,
-            "label": "Data filling form" 
-        },
-        {
-            "text": "1  2  2  2  2  2  2  2",
-            "x": 213,
-            "y": 100,
-            "font_size": 12,
-            "label": "invoice_number"
-        }
-    ],
-    "1": [
-        {
-            "text": "Another Text",
-            "x": 150,
-            "y": 350,
-            "font_size": 14,
-            "label": "total_amount"
-        }
-    ]
-}
-
-try:
-    json_string = json.dumps(text_data, indent=2)
-    add_text_to_pdf(input_pdf, output_pdf, json_string, zoom=3)
+    add_text_to_pdf(input_pdf, output_pdf, form_elements_path, zoom=3)
 except Exception as e:
     print(f"Error: {str(e)}")
