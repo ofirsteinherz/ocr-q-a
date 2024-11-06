@@ -1,0 +1,409 @@
+{
+    "sections": [
+        {
+            "id": "header",
+            "title": "",
+            "fields": [
+                {
+                    "label": "המוסד לביטוח לאומי",
+                    "value": "המוסד לביטוח לאומי",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "מינהל הגמלאות",
+                    "value": "מינהל הגמלאות",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "בקשה למתן טיפול רפואי לנפגע עבודה - עצמאי",
+                    "value": "בקשה למתן טיפול רפואי לנפגע עבודה - עצמאי",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "אל קופ״ח/בי״ח",
+                    "value": "מאיר כפ״ס",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "תאריך מילוי הטופס",
+                    "value": "25 01 2023",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "date"
+                },
+                {
+                    "label": "תאריך קבלת הטופס בקופה",
+                    "value": "02 02 1999",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "date"
+                }
+            ]
+        },
+        {
+            "id": "section1",
+            "title": "תאריך הפגיעה",
+            "fields": [
+                {
+                    "label": "תאריך הפגיעה",
+                    "value": "16 04 2022",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "date"
+                }
+            ]
+        },
+        {
+            "id": "section2",
+            "title": "פרטי התובע",
+            "fields": [
+                {
+                    "label": "שם משפחה",
+                    "value": "טננבוים",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "שם פרטי",
+                    "value": "יהודה",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "ת.ז",
+                    "value": "877524563",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "תאריך לידה",
+                    "value": "02 02 1995",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "date"
+                },
+                {
+                    "label": "מין",
+                    "sub_fields": [
+                        {
+                            "label": "זכר",
+                            "value": "",
+                            "selected": true,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "נקבה",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        }
+                    ]
+                },
+                {
+                    "label": "רחוב",
+                    "value": "הרמב״ם",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "מס' בית",
+                    "value": "16",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "כניסה",
+                    "value": "1",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "דירה",
+                    "value": "12",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "יישוב",
+                    "value": "אבן יהודה",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "מיקוד",
+                    "value": "312422",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "טלפון קווי",
+                    "value": "",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "phone_number"
+                },
+                {
+                    "label": "טלפון נייד",
+                    "value": "0502474947",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "phone_number"
+                }
+            ]
+        },
+        {
+            "id": "section3",
+            "title": "פרטי התאונה",
+            "fields": [
+                {
+                    "label": "בתאריך",
+                    "value": "16.04.2022",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "date"
+                },
+                {
+                    "label": "בשעה",
+                    "value": "19:00",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "time"
+                },
+                {
+                    "label": "כאשר עבדתי ב",
+                    "value": "מלצרות",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "מקום התאונה",
+                    "sub_fields": [
+                        {
+                            "label": "מפעל",
+                            "value": "",
+                            "selected": true,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "ת. דרכים בעבודה",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "ת. דרכים בדרך לעבודה/מהעבודה",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "תאונה בדרך לא רכב",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "אחר",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        }
+                    ]
+                },
+                {
+                    "label": "כתובת מקום התאונה",
+                    "value": "הירדן 8, תל אביב",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "נסיבות הפגיעה / תיאור התאונה",
+                    "value": "החלקתי בגלל שהרצפה היתה רטובה ולא היה שום שלט אזהרה.",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "האיבר שנפגע",
+                    "value": "יד שמאל",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "id": "section4",
+            "title": "הצהרה",
+            "fields": [
+                {
+                    "label": "הצהרה",
+                    "value": "אני החתום מטה מצהיר כי אני רשום במוסד כעובד עצמאי וכי כל הפרטים שמסרתי לעיל הם נכונים ומלאים",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "שם המבקש",
+                    "value": "טננבוים יהודה",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "חתימה",
+                    "value": "signed",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "id": "section5",
+            "title": "למילוי ע״י המוסד הרפואי",
+            "fields": [
+                {
+                    "label": "סטטוס חברות בקופת חולים",
+                    "sub_fields": [
+                        {
+                            "label": "הנפגע חבר בקופת חולים",
+                            "value": "",
+                            "selected": true,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "הנפגע אינו חבר בקופת חולים",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        }
+                    ]
+                },
+                {
+                    "label": "קופת חולים",
+                    "sub_fields": [
+                        {
+                            "label": "כללית",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "מאוחדת",
+                            "value": "",
+                            "selected": true,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "מכבי",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "לאומית",
+                            "value": "",
+                            "selected": false,
+                            "x": 0,
+                            "y": 0,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        }
+                    ]
+                },
+                {
+                    "label": "מספר האישור (אסמכתא רפואית)",
+                    "value": "",
+                    "x": 0,
+                    "y": 0,
+                    "font_size": 12,
+                    "type": "text"
+                }
+            ]
+        }
+    ]
+}
