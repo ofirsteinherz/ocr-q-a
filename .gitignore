@@ -183,3 +183,5 @@ teak-ellipse-401213-fba00a21f05d.json
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+/OCR/files/generated_pdfs
