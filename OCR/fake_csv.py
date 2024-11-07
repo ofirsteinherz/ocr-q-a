@@ -31,6 +31,19 @@ class FakeFormDataGenerator:
         selected_index = random.randrange(len(options))
         return [(field, "V" if i == selected_index else "") 
                 for i, (field, _) in enumerate(options)]
+    
+    def generate_injury_sentence(self):
+        # Possible variations for actions and circumstances
+        actions = ["החלקה", "נפילה", "מעידה", "איבוד שיווי משקל"]
+        locations = ["רצפה רטובה", "מדרגה חלקלקה", "שביל רטוב", "משטח חלק"]
+        circumstances = ["במהלך העבודה", "בעת ביצוע מטלה", "בעת תפקיד"]
+
+        # Build the sentence with random choices
+        action = random.choice(actions)
+        location = random.choice(locations)
+        circumstance = random.choice(circumstances)
+
+        return f"{action} על {location} {circumstance}."
 
     def generate_fake_data(self) -> List[Dict[str, str]]:
         # Define groups of mutually exclusive choices
@@ -94,7 +107,7 @@ class FakeFormDataGenerator:
             ("section3|בשעה", self.generate_time()),
             ("section3|כאשר עבדתי ב", random.choice(['מלצרות', 'מכירות', 'משרד', 'מחסן', 'נהיגה'])),
             ("section3|כתובת מקום התאונה", f"{self.fake.street_name()} {random.randint(1,100)}, {self.fake.city()}"),
-            ("section3|נסיבות הפגיעה / תיאור התאונה", "החלקה על רצפה רטובה במהלך העבודה"),
+            ("section3|נסיבות הפגיעה / תיאור התאונה", self.generate_injury_sentence()),
             ("section3|האיבר שנפגע", random.choice(['יד ימין', 'יד שמאל', 'רגל ימין', 'רגל שמאל', 'גב', 'ראש'])),
             
             # Section 4
