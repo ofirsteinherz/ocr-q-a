@@ -1,5 +1,7 @@
 import os
 import json
+import csv
+import pandas as pd
 from fake_csv import FakeFormDataGenerator
 from form_processor import FormProcessor
 from insert_pdf import add_text_to_pdf
@@ -8,49 +10,79 @@ def main():
     # Setup paths
     script_dir = os.path.dirname(os.path.abspath(__file__))
     files_dir = os.path.join(script_dir, "files")
+    pdfs_dir = os.path.join(files_dir, "generated_pdfs")
     
-    # Ensure files directory exists
+    # Ensure directories exist
     os.makedirs(files_dir, exist_ok=True)
+    os.makedirs(pdfs_dir, exist_ok=True)
 
-    # Define all file paths
-    fake_csv_path = os.path.join(files_dir, "fake_form_data.csv")
+    # Define file paths
     form_elements_json = os.path.join(script_dir, "form_elements.json")
-    updated_form_json = os.path.join(files_dir, "updated_form.json")
     input_pdf = os.path.join(files_dir, "283_raw.pdf")
-    output_pdf = os.path.join(files_dir, "output_high_res.pdf")
+    master_csv_path = os.path.join(files_dir, "master_data.csv")
 
     try:
-        # Step 1: Generate fake CSV data
-        print("\n=== Step 1: Generating fake CSV data ===")
+        # Initialize generator and processor
         generator = FakeFormDataGenerator()
-        generator.save_to_csv(fake_csv_path)
-        print("✓ Fake CSV file has been generated successfully!")
-
-        # Step 2: Process form data using the generated fake CSV
-        print("\n=== Step 2: Processing form data ===")
         processor = FormProcessor()
         
-        # Load original JSON
+        # Load original JSON template
         with open(form_elements_json, 'r', encoding='utf-8') as f:
-            json_data = json.load(f)
+            json_template = json.load(f)
 
-        # Update with the generated fake CSV data
-        updated_json = processor.update_json_with_csv(json_data, fake_csv_path)
+        # List to store all generated data
+        all_data = []
 
-        # Save the updated JSON
-        with open(updated_form_json, 'w', encoding='utf-8') as f:
-            json.dump(updated_json, f, ensure_ascii=False, indent=4)
+        print("\n=== Starting batch PDF generation ===")
         
-        processor.print_update_report()
-        print("✓ Form processing completed successfully!")
+        # Generate 100 PDFs
+        for i in range(100):
+            print(f"\nProcessing PDF {i+1}/100")
+            
+            # Generate temporary CSV for this iteration
+            temp_csv_path = os.path.join(files_dir, f"temp_form_data_{i}.csv")
+            generator.save_to_csv(temp_csv_path)
+            
+            # Update JSON with the generated fake CSV data
+            updated_json = processor.update_json_with_csv(json_template.copy(), temp_csv_path)
+            
+            # Read the generated CSV data and add filename column
+            df = pd.read_csv(temp_csv_path, on_bad_lines='skip', escapechar='\\', quoting=csv.QUOTE_ALL)
+            pdf_filename = f"form_{i+1}.pdf"
+            df['filename'] = pdf_filename
+            
+            # Add data to master list
+            all_data.append(df)
+            
+            # Save updated JSON temporarily
+            temp_json_path = os.path.join(files_dir, f"temp_form_{i}.json")
+            with open(temp_json_path, 'w', encoding='utf-8') as f:
+                json.dump(updated_json, f, ensure_ascii=False, indent=4)
+            
+            # Generate PDF
+            output_pdf = os.path.join(pdfs_dir, pdf_filename)
+            add_text_to_pdf(input_pdf, output_pdf, temp_json_path, zoom=3)
+            
+            # Clean up temporary files
+            os.remove(temp_csv_path)
+            os.remove(temp_json_path)
+            
+            print(f"✓ Generated PDF: {pdf_filename}")
 
-        # Step 3: Insert text into PDF using the updated form data
-        print("\n=== Step 3: Generating final PDF ===")
-        add_text_to_pdf(input_pdf, output_pdf, updated_form_json, zoom=3)
-        print("✓ PDF generation completed successfully!")
-
-        print("\n=== Process completed successfully! ===")
-        print(f"Output PDF saved to: {output_pdf}")
+        # Create and save master CSV
+        master_df = pd.concat(all_data, ignore_index=True)
+        
+        # Reorder columns to put filename first
+        cols = master_df.columns.tolist()
+        cols.remove('filename')
+        cols = ['filename'] + cols
+        master_df = master_df[cols]
+        
+        master_df.to_csv(master_csv_path, index=False)
+        
+        print("\n=== Batch processing completed successfully! ===")
+        print(f"Generated PDFs are saved in: {pdfs_dir}")
+        print(f"Master CSV saved to: {master_csv_path}")
 
     except FileNotFoundError as e:
         print(f"\nError: Required file not found: {str(e)}")
