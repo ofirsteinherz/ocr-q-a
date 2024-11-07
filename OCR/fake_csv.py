@@ -7,6 +7,11 @@ import faker
 class FakeFormDataGenerator:
     def __init__(self):
         self.fake = faker.Faker(['he_IL'])  # Hebrew locale
+
+    def generate_number(self, length: int) -> str:
+        """Generate number without spaces between digits"""
+        digits = [str(random.randint(0, 9)) for _ in range(length)]
+        return " ".join(digits)
         
     def generate_spaced_number(self, length: int) -> str:
         """Generate number with spaces between digits"""
@@ -92,7 +97,7 @@ class FakeFormDataGenerator:
             ("section2|שם משפחה", self.fake.last_name()),
             ("section2|שם פרטי", self.fake.first_name()),
             ("section2|ת.ז", self.generate_spaced_number(10)),
-            ("section2|תאריך לידה", self.generate_spaced_number(8)),
+            ("section2|תאריך לידה", self.generate_number(8)),
             ("section2|רחוב", self.fake.street_name()),
             ("section2|מס' בית", str(random.randint(1, 150))),
             ("section2|כניסה", str(random.randint(1, 4))),
@@ -112,7 +117,7 @@ class FakeFormDataGenerator:
             
             # Section 4
             ("section4|שם המבקש", f"{self.fake.first_name()} {self.fake.last_name()}"),
-            ("section4|חתימה", "signed"),
+            ("section4|חתימה", random.choice(['signed', ''])),
             
             # Section 5 - Medical Details
             ("section5|אבחנה רפואית 1", self.generate_spaced_number(4)),
@@ -136,6 +141,7 @@ class FakeFormDataGenerator:
                 section, field_name = field.split('|')
                 writer.writerow([section, field_name, value])
 
+# Example usage:
 if __name__ == "__main__":
     generator = FakeFormDataGenerator()
     generator.save_to_csv('files/fake_form_data.csv')

@@ -97,14 +97,16 @@ def add_text_to_pdf(input_pdf, output_pdf, form_elements_path, zoom=2):
     except Exception as e:
         raise Exception(f"Error processing PDF: {str(e)}")
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
+# Example usage:
+if __name__ == "__main__":
+    script_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Correct paths - looking in the 'files' subfolder
-input_pdf = os.path.join(script_dir, "files", "283_raw.pdf")
-output_pdf = os.path.join(script_dir, "files", "output_high_res.pdf")
-form_elements_path = os.path.join(script_dir, "form_elements.json")
+    # Correct paths - looking in the 'files' subfolder
+    input_pdf = os.path.join(script_dir, "files", "283_raw.pdf")
+    output_pdf = os.path.join(script_dir, "files", "output_high_res.pdf")
+    form_elements_path = os.path.join(script_dir, "form_elements.json")
 
-try:
-    add_text_to_pdf(input_pdf, output_pdf, form_elements_path, zoom=3)
-except Exception as e:
-    print(f"Error: {str(e)}")
+    try:
+        add_text_to_pdf(input_pdf, output_pdf, form_elements_path, zoom=3)
+    except Exception as e:
+        print(f"Error: {str(e)}")
