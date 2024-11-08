@@ -1,104 +1,117 @@
-import json
+import logging
 from pathlib import Path
-from dotenv import load_dotenv
-import os
+import json
+import re
 
-from ocr_project.core.document_analyzer import DocumentAnalyzer
-from ocr_project.core.gpt_client import GPTClient, Message, MessageRole, GPTResponseError
 from ocr_project.config.settings import settings
+from ocr_project.core.extract_form_fields import ExtractFormFields
 
-def process_document(form_path: Path, analyzer: DocumentAnalyzer, client: GPTClient) -> dict:
-    """Process a single document through OCR and GPT analysis"""
-    try:
-        # Extract text from document
-        print(f"Processing document: {form_path}")
-        extracted_data = analyzer.analyze_local_document(str(form_path))
-        extracted_ocr = json.dumps(extracted_data, indent=4)
-
-        # Get the OCR analysis prompt
-        try:
-            prompt = settings.get_prompt("ocr_analysis")
-        except FileNotFoundError as e:
-            print(f"Error: {e}")
-            print("Make sure the prompt file exists at:", settings.PROMPTS_DIR / "ocr_analysis.txt")
-            return None
-        except Exception as e:
-            print(f"Error reading prompt: {e}")
-            return None
-
-        # Process with GPT
-        messages = [
-            Message(role=MessageRole.SYSTEM, content=prompt),
-            Message(role=MessageRole.USER, content=extracted_ocr)
+def setup_logging():
+    """Configure logging for the main OCR process"""
+    settings.LOGS_DIR.mkdir(exist_ok=True)
+    
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.FileHandler(settings.LOGS_DIR / 'ocr_main.log'),
+            logging.StreamHandler()
         ]
+    )
+    return logging.getLogger('OCR_Main')
+
+def get_form_number(filename: str) -> int:
+    """Extract form number from filename."""
+    match = re.search(r'form_(\d+)\.pdf', filename)
+    return int(match.group(1)) if match else 0
+
+def process_forms():
+    """Process all forms in the generated PDFs directory"""
+    logger = setup_logging()
+    logger.info("\nStarting form processing application...")
+    
+    try:
+        # Initialize processor
+        processor = ExtractFormFields()
         
-        response = client.chat(messages, json_response=True)
-        print(f"Successfully processed: {form_path.name}")
-        return response
+        # Get all PDF files and sort them by form number
+        pdf_files = list(settings.GENERATED_PDFS_DIR.glob("form_*.pdf"))
+        pdf_files.sort(key=lambda x: get_form_number(x.name))
+        
+        if not pdf_files:
+            logger.error("No PDF files found in the generated PDFs directory")
+            return
+            
+        total_files = len(pdf_files)
+        processed_count = 0
+        skipped_count = 0
+        failed_count = 0
+        
+        logger.info(f"Found {total_files} PDF files to process")
+        
+        # Keep track of processed files
+        processed_forms = set()
+        existing_analyses = set(f.stem.replace('_analysis', '') for f in settings.ANALYZED_FORMS_DIR.glob("*_analysis.json"))
+        
+        # Process each form
+        for pdf_file in pdf_files:
+            form_name = pdf_file.stem
+            
+            # Skip if already processed
+            if form_name in existing_analyses:
+                logger.info(f"Skipping {form_name} - already processed")
+                skipped_count += 1
+                continue
+                
+            logger.info(f"\nProcessing form {get_form_number(pdf_file.name)}/{total_files}: {pdf_file.name}")
+            
+            try:
+                # Process form
+                results = processor.process_form(
+                    pdf_path=pdf_file,
+                    output_dir=settings.ANALYZED_FORMS_DIR
+                )
+                
+                # Save results
+                output_path = settings.ANALYZED_FORMS_DIR / f"{pdf_file.stem}_analysis.json"
+                with open(output_path, 'w', encoding='utf-8') as f:
+                    json.dump(results, f, ensure_ascii=False, indent=2)
+                
+                processed_forms.add(form_name)
+                processed_count += 1
+                logger.info(f"✓ Results saved to {output_path}")
+                
+            except Exception as e:
+                logger.error(f"Error processing {pdf_file.name}: {str(e)}")
+                failed_count += 1
+                continue
+        
+        # Report processing statistics
+        logger.info("\n=== Processing Summary ===")
+        logger.info(f"Total files found: {total_files}")
+        logger.info(f"Successfully processed: {processed_count}")
+        logger.info(f"Already processed (skipped): {skipped_count}")
+        logger.info(f"Failed to process: {failed_count}")
+        
+        # Check for missing files
+        expected_forms = set(f"form_{i}" for i in range(1, max(get_form_number(f.name) for f in pdf_files) + 1))
+        missing_forms = expected_forms - processed_forms - existing_analyses
+        
+        if missing_forms:
+            logger.warning("\nMissing form files:")
+            for form in sorted(missing_forms, key=lambda x: get_form_number(x)):
+                logger.warning(f"- {form}.pdf")
+        
+        logger.info("\nProcessing completed")
         
     except Exception as e:
-        print(f"Error processing {form_path.name}: {str(e)}")
-        return None
-
-def validate_environment() -> bool:
-    """Validate all required environment variables exist"""
-    required_env_vars = [
-        "AZURE_DOCUMENT_KEY",
-        "AZURE_DOCUMENT_ENDPOINT",
-        "AZURE_OPENAI_API_KEY",
-        "AZURE_OPENAI_ENDPOINT"
-    ]
-    
-    missing_vars = [var for var in required_env_vars if not os.getenv(var)]
-    if missing_vars:
-        print("Missing required environment variables:")
-        for var in missing_vars:
-            print(f"- {var}")
-        return False
-    return True
+        logger.error(f"Error in main process: {str(e)}")
+        raise
+    finally:
+        settings.clean_pycache()
 
 def main():
-    # Load environment variables from project root
-    env_path = settings.PROJECT_ROOT / ".env"
-    load_dotenv(env_path, verbose=True)
-    
-    if not validate_environment():
-        return
-
-    try:
-        # Initialize services
-        analyzer = DocumentAnalyzer(
-            api_key=os.getenv("AZURE_DOCUMENT_KEY"),
-            endpoint=os.getenv("AZURE_DOCUMENT_ENDPOINT")
-        )
-
-        client = GPTClient(
-            api_key=os.getenv("AZURE_OPENAI_API_KEY"),
-            endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
-        )
-
-        # Process first generated form
-        form_1_path = settings.GENERATED_PDFS_DIR / "form_1.pdf"
-        if not form_1_path.exists():
-            print(f"Form not found: {form_1_path}")
-            print("Please run the form generation script first (main.py)")
-            return
-
-        # Process the document
-        result = process_document(form_1_path, analyzer, client)
-        
-        if result:
-            # Save the result
-            output_json_path = settings.ANALYZED_FORMS_DIR / "form_1_analysis.json"
-            output_json_path.parent.mkdir(exist_ok=True)
-            
-            with open(output_json_path, 'w', encoding='utf-8') as f:
-                json.dump(result, f, ensure_ascii=False, indent=4)
-                
-            print(f"\nAnalysis saved to: {output_json_path}")
-        
-    except Exception as e:
-        print(f"Unexpected error: {e}")
+    process_forms()
 
 if __name__ == "__main__":
     main()

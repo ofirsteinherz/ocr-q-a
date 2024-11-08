@@ -47,6 +47,28 @@ class Settings:
         self.PDF_ZOOM = 3
         self.NUM_PDFS_TO_GENERATE = 100
 
+        # Form processing settings
+        self.FORM_CONFIG_DIR = self.CONFIG_DIR
+        self.SCHEMA_FILE = self.RESOURCES_DIR / "schema.json"
+        self.SECTIONS_FILE = self.RESOURCES_DIR / "sections.json"
+        
+        # Image processing settings
+        self.DEFAULT_DPI = 300
+
+    def clean_pycache(self):
+        """Remove all __pycache__ directories in the project"""
+        for root, dirs, files in os.walk(self.PROJECT_ROOT):
+            for dir in dirs:
+                if dir == "__pycache__":
+                    cache_path = Path(root) / dir
+                    print(f"Removing cache directory: {cache_path}")
+                    try:
+                        for file in cache_path.glob("*"):
+                            file.unlink()
+                        cache_path.rmdir()
+                    except Exception as e:
+                        print(f"Error removing {cache_path}: {e}")
+
     def get_prompt(self, prompt_name: str) -> str:
         """Get the content of a specific prompt file from the prompts directory"""
         prompt_path = self.PROMPTS_DIR / f"{prompt_name}.txt"

@@ -1,0 +1,304 @@
+{
+    "header": {
+        "title": "Form Header",
+        "description": "Basic form identification and dates",
+        "fields": [
+            {
+                "id": "medical_facility",
+                "label": "אל קופ״ח/בי״ח",
+                "description": "Target healthcare facility name",
+                "type": "text"
+            },
+            {
+                "id": "form_fill_date",
+                "label": "תאריך מילוי הטופס",
+                "description": "Date when form was filled out",
+                "type": "date"
+            },
+            {
+                "id": "form_receipt_date",
+                "label": "תאריך קבלת הטופס בקופה",
+                "description": "Date when form was received by healthcare provider",
+                "type": "date"
+            }
+        ]
+    },
+    "section1": {
+        "title": "תאריך הפגיעה",
+        "description": "Injury date information",
+        "fields": [
+            {
+                "id": "injury_date",
+                "label": "תאריך הפגיעה",
+                "description": "Date when injury occurred",
+                "type": "date"
+            }
+        ]
+    },
+    "section2": {
+        "title": "פרטי התובע",
+        "description": "Claimant's personal information",
+        "fields": [
+            {
+                "id": "last_name",
+                "label": "שם משפחה",
+                "description": "Claimant's family name",
+                "type": "text"
+            },
+            {
+                "id": "first_name",
+                "label": "שם פרטי",
+                "description": "Claimant's given name",
+                "type": "text"
+            },
+            {
+                "id": "id_number",
+                "label": "ת.ז",
+                "description": "Israeli ID number (9 digits)",
+                "type": "text"
+            },
+            {
+                "id": "birth_date",
+                "label": "תאריך לידה",
+                "description": "Claimant's date of birth",
+                "type": "date"
+            },
+            {
+                "id": "gender",
+                "label": "מין",
+                "description": "Gender selection",
+                "type": "group",
+                "sub_fields": [
+                    {
+                        "id": "male",
+                        "label": "זכר",
+                        "description": "Male option",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "female",
+                        "label": "נקבה",
+                        "description": "Female option",
+                        "type": "checkbox"
+                    }
+                ]
+            },
+            {
+                "id": "street",
+                "label": "רחוב",
+                "description": "Street name",
+                "type": "text"
+            },
+            {
+                "id": "house_number",
+                "label": "מס' בית",
+                "description": "House number",
+                "type": "text"
+            },
+            {
+                "id": "entrance",
+                "label": "כניסה",
+                "description": "Building entrance identifier",
+                "type": "text"
+            },
+            {
+                "id": "apartment",
+                "label": "דירה",
+                "description": "Apartment number",
+                "type": "text"
+            },
+            {
+                "id": "city",
+                "label": "יישוב",
+                "description": "City/town name",
+                "type": "text"
+            },
+            {
+                "id": "postal_code",
+                "label": "מיקוד",
+                "description": "Postal/ZIP code",
+                "type": "text"
+            },
+            {
+                "id": "landline",
+                "label": "טלפון קווי",
+                "description": "Home phone number",
+                "type": "phone_number"
+            },
+            {
+                "id": "mobile",
+                "label": "טלפון נייד",
+                "description": "Mobile phone number",
+                "type": "phone_number"
+            }
+        ]
+    },
+    "section3": {
+        "title": "פרטי התאונה",
+        "description": "Accident details",
+        "fields": [
+            {
+                "id": "accident_date",
+                "label": "בתאריך",
+                "description": "Date of accident",
+                "type": "date"
+            },
+            {
+                "id": "accident_time",
+                "label": "בשעה",
+                "description": "Time of accident",
+                "type": "time"
+            },
+            {
+                "id": "work_type",
+                "label": "כאשר עבדתי ב",
+                "description": "Type of work during accident",
+                "type": "text"
+            },
+            {
+                "id": "accident_location",
+                "label": "מקום התאונה",
+                "description": "Accident location type",
+                "type": "group",
+                "sub_fields": [
+                    {
+                        "id": "factory",
+                        "label": "מפעל",
+                        "description": "Factory location",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "work_traffic",
+                        "label": "ת. דרכים בעבודה",
+                        "description": "Traffic accident during work",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "commute_traffic",
+                        "label": "ת. דרכים בדרך לעבודה/מהעבודה",
+                        "description": "Traffic accident during commute",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "non_vehicle",
+                        "label": "תאונה בדרך לא רכב",
+                        "description": "Non-vehicle accident",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "other",
+                        "label": "אחר",
+                        "description": "Other accident type",
+                        "type": "checkbox"
+                    }
+                ]
+            },
+            {
+                "id": "accident_address",
+                "label": "כתובת מקום התאונה",
+                "description": "Full address where accident occurred",
+                "type": "text"
+            },
+            {
+                "id": "accident_description",
+                "label": "נסיבות הפגיעה / תיאור התאונה",
+                "description": "Detailed accident description",
+                "type": "text"
+            },
+            {
+                "id": "injured_part",
+                "label": "האיבר שנפגע",
+                "description": "Injured body part",
+                "type": "text"
+            }
+        ]
+    },
+    "section4": {
+        "title": "הצהרה",
+        "description": "Declaration section",
+        "fields": [
+            {
+                "id": "declarant_name",
+                "label": "שם המבקש",
+                "description": "Name of person making declaration",
+                "type": "text"
+            },
+            {
+                "id": "signature",
+                "label": "חתימה",
+                "description": "Signature indicator",
+                "type": "text"
+            }
+        ]
+    },
+    "section5": {
+        "title": "למילוי ע״י המוסד הרפואי",
+        "description": "Medical institution section",
+        "fields": [
+            {
+                "id": "hmo_status",
+                "label": "סטטוס חברות בקופת חולים",
+                "description": "Healthcare membership status",
+                "type": "group",
+                "sub_fields": [
+                    {
+                        "id": "is_member",
+                        "label": "הנפגע חבר בקופת חולים",
+                        "description": "Patient is HMO member",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "not_member",
+                        "label": "הנפגע אינו חבר בקופת חולים",
+                        "description": "Patient is not HMO member",
+                        "type": "checkbox"
+                    }
+                ]
+            },
+            {
+                "id": "hmo_provider",
+                "label": "קופת חולים",
+                "description": "Healthcare provider selection",
+                "type": "group",
+                "sub_fields": [
+                    {
+                        "id": "clalit",
+                        "label": "כללית",
+                        "description": "Clalit HMO",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "meuhedet",
+                        "label": "מאוחדת",
+                        "description": "Meuhedet HMO",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "maccabi",
+                        "label": "מכבי",
+                        "description": "Maccabi HMO",
+                        "type": "checkbox"
+                    },
+                    {
+                        "id": "leumit",
+                        "label": "לאומית",
+                        "description": "Leumit HMO",
+                        "type": "checkbox"
+                    }
+                ]
+            },
+            {
+                "id": "diagnosis_1",
+                "label": "אבחנה רפואית 1",
+                "description": "Primary medical diagnosis code",
+                "type": "text"
+            },
+            {
+                "id": "diagnosis_2",
+                "label": "אבחנה רפואית 2",
+                "description": "Secondary medical diagnosis code",
+                "type": "text"
+            }
+        ]
+    }
+}

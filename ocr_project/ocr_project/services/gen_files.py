@@ -32,7 +32,7 @@ def main():
             print(f"\nProcessing PDF {i+1}/{settings.NUM_PDFS_TO_GENERATE}")
             
             # Generate temporary CSV for this iteration
-            temp_csv_path = settings.get_temp_path(f"temp_form_data_{i}.csv")
+            temp_csv_path = settings.TEMP_DIR / f"temp_form_data_{i}.csv"
             generator.save_to_csv(temp_csv_path)
             
             # Update JSON with the generated fake CSV data
@@ -47,12 +47,12 @@ def main():
             all_data.append(df)
             
             # Save updated JSON temporarily
-            temp_json_path = settings.get_temp_path(f"temp_form_{i}.json")
+            temp_json_path = settings.TEMP_DIR / f"temp_form_{i}.json"
             with open(temp_json_path, 'w', encoding='utf-8') as f:
                 json.dump(updated_json, f, ensure_ascii=False, indent=4)
             
             # Generate PDF
-            output_pdf = settings.get_output_pdf_path(pdf_filename)
+            output_pdf = settings.GENERATED_PDFS_DIR / pdf_filename
             add_text_to_pdf(
                 settings.RAW_PDF_PATH,
                 output_pdf,
@@ -87,3 +87,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    settings.clean_pycache()

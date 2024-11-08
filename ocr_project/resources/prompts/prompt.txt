@@ -1,0 +1,81 @@
+# Hebrew Medical Form Processing Guidelines
+
+## 1. Form Header Information
+Process three distinct date fields at the top of the form:
+- תאריך מילוי הטופס (Form Fill Date)
+- תאריך קבלת הטופס בקופה (Form Receipt Date)
+- תאריך הפגיעה (Injury Date)
+Format: DD/MM/YYYY 
+
+## 2. Section Types and Fields
+
+### Personal Information (פרטי הנתבע)
+- שם משפחה (Last Name): text field
+- שם פרטי (First Name): text field
+- ת.ז. (ID Number): 9-digit number field
+- תאריך לידה (Birth Date): date field
+- מין (Gender): checkbox field
+  * זכר (Male): "V" if selected
+  * נקבה (Female): "V" if selected
+
+### Address (כתובת)
+- רחוב/ת.ד (Street/PO Box): text field
+- מס' בית (House Number): numeric field
+- כניסה (Entrance): text/numeric field
+- דירה (Apartment): numeric field
+- יישוב (City): text field
+- מיקוד (Postal Code): numeric field
+- טלפון קווי (Landline): phone number field
+- טלפון נייד (Mobile): phone number field
+
+### Accident Details (פרטי התאונה)
+- תאריך (Date): date field DD/MM/YYYY 
+- שעה (Time): time field (24-hour format)
+- סוג העבודה (Type of Work): text field
+- מקום התאונה (Accident Location): checkbox fields
+  * במפעל
+  * ת. דרכים בעבודה
+  * ת. דרכים בדרך לעבודה/מהעבודה
+  * אחר
+- כתובת מקום התאונה (Accident Location Address): text field
+- נסיבות הפגיעה / תיאור התאונה (Accident Description): text field
+- האיבר שנפגע (Injured Body Part): text field
+
+### Declaration (הצהרה)
+- שם המבקש (Requester Name): text field
+- חתימה (Signature): text field
+
+### Insurance Details (למילוי ע"י המוסד הרפואי)
+- Multiple checkbox fields for coverage type:
+  * כללית
+  * מאוחדת
+  * מכבי
+  * לאומית
+- Membership status checkboxes
+- מחוז התאונה/אבחנה ראשונה (Accident District/Initial Diagnosis): numeric codes
+
+## 3. Processing Rules
+1. Maintain exact formatting for all date fields whether in boxes or standard format
+2. Preserve leading zeros in all numeric fields
+3. Keep Hebrew text exactly as written with proper RTL formatting
+4. Handle mixed Hebrew/English text in address fields
+5. Process checkmarks exactly as shown (V, X, or ✓)
+6. Preserve phone numbers exactly as formatted in boxes
+
+## 4. Output Format
+```json
+{
+  "section_name": {
+    "field_name": "value",
+    // All fields as specified in section schema
+  }
+}
+```
+
+## 5. Error Handling
+- Mark unclear text with empty string ""
+- Handle partially filled number boxes by keeping visible digits only
+- Preserve incomplete addresses exactly as written
+- Never interpret or correct apparent errors in the form
+
+All processing should maintain the exact format and structure of the original form while capturing all data precisely as written.

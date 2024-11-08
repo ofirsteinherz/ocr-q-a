@@ -7,9 +7,11 @@ from dataclasses import dataclass
 from dotenv import load_dotenv
 import logging
 from datetime import datetime
+from pathlib import Path
 
-from document_analyzer import DocumentAnalyzer
-from gpt_client import GPTClient, Message, MessageRole, GPTResponseError
+from ocr_project.config.settings import settings
+from ocr_project.core.document_analyzer import DocumentAnalyzer
+from ocr_project.core.gpt_client import GPTClient, Message, MessageRole
 
 @dataclass
 class Section:
@@ -17,29 +19,29 @@ class Section:
     y_start: int
     y_end: int = None
     path: str = None
-
-class FormProcessor:
-    def __init__(self, config_path: str = "config"):
-        """Initialize the form processor with configurations."""
+    
+class ExtractFormFields:
+    def __init__(self):
+        """Initialize the form fields extractor with configurations."""
+        self.current_file = None
         self._setup_logging()
-        self.logger = logging.getLogger('FormProcessor')
+        self.logger = logging.getLogger('ExtractFormFields')
         
-        self.logger.info("Initializing Form Processor...")
-        self.logger.info(f"Using config path: {config_path}")
+        self.logger.info("Initializing Form Fields Extractor...")
         
         load_dotenv(verbose=True)
         
         # Load configurations
         self.logger.info("Loading configuration files...")
         try:
-            self.prompt = self._load_file(os.path.join(config_path, "prompt.txt"))
-            self.post_process_prompt = self._load_file(os.path.join(config_path, "post_process_prompt.txt"))
+            self.prompt = settings.get_prompt("prompt")
+            self.post_process_prompt = settings.get_prompt("post_process_prompt")
             self.logger.info("✓ Prompts loaded successfully")
             
-            self.schema = self._load_json(os.path.join(config_path, "schema.json"))
+            self.schema = self._load_json(settings.SCHEMA_FILE)
             self.logger.info("✓ Schema loaded successfully")
             
-            sections_config = self._load_json(os.path.join(config_path, "sections.json"))
+            sections_config = self._load_json(settings.SECTIONS_FILE)
             self.sections_config = sections_config["sections"]
             self.logger.info("✓ Sections config loaded successfully")
             
@@ -68,15 +70,21 @@ class FormProcessor:
 
     def _setup_logging(self):
         """Set up logging configuration."""
-        # Create logs directory if it doesn't exist
-        os.makedirs('logs', exist_ok=True)
+        settings.LOGS_DIR.mkdir(exist_ok=True)
         
-        # Create a formatter
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        # Get the root logger and remove all handlers
+        root_logger = logging.getLogger()
+        if root_logger.hasHandlers():
+            root_logger.handlers.clear()
+        
+        # Create a formatter that includes the current file
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - [%(current_file)s] - %(levelname)s - %(message)s'
+        )
         
         # Set up file handler with timestamp in filename
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        file_handler = logging.FileHandler(f'logs/form_processor_{timestamp}.log')
+        file_handler = logging.FileHandler(settings.LOGS_DIR / f'extract_form_fields_{timestamp}.log')
         file_handler.setFormatter(formatter)
         
         # Set up console handler
@@ -84,35 +92,63 @@ class FormProcessor:
         console_handler.setFormatter(formatter)
         
         # Configure logger
-        logger = logging.getLogger('FormProcessor')
+        logger = logging.getLogger('ExtractFormFields')
+        
+        # Remove any existing handlers to prevent duplication
+        if logger.hasHandlers():
+            logger.handlers.clear()
+            
         logger.setLevel(logging.INFO)
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
+        
+        # Prevent propagation to avoid duplicate logs
+        logger.propagate = False
 
-    def process_form(self, pdf_path: str, output_dir: str = "output", dpi: int = 300) -> Dict:
+        # Add filter to include current file in log records
+        class ContextFilter(logging.Filter):
+            def __init__(self, extract_form_fields):
+                super().__init__()
+                self.extract_form_fields = extract_form_fields
+
+            def filter(self, record):
+                record.current_file = self.extract_form_fields.current_file or 'NO_FILE'
+                return True
+
+        logger.addFilter(ContextFilter(self))
+
+    def process_form(self, pdf_path: Path, output_dir: Path = None, dpi: int = None) -> Dict:
         """Process a single form and return structured data."""
-        self.logger.info(f"\n{'='*50}\nStarting form processing")
-        self.logger.info(f"Processing PDF: {pdf_path}")
+        self.current_file = pdf_path.name  # Set current file being processed
+        output_dir = output_dir or settings.ANALYZED_FORMS_DIR
+        dpi = dpi or settings.DEFAULT_DPI
         
-        # First pass - process sections
-        first_pass_results = self._process_sections(pdf_path, output_dir, dpi)
+        self.logger.info("="*50)
+        self.logger.info("Starting form processing")
         
-        # Second pass - post-process entire form
-        self.logger.info("\nStarting second pass - post-processing form data...")
         try:
-            final_results = self._post_process_form(first_pass_results)
-            self.logger.info("✓ Post-processing completed successfully")
-        except Exception as e:
-            self.logger.error(f"Error in post-processing: {str(e)}")
-            final_results = first_pass_results
+            # First pass - process sections
+            first_pass_results = self._process_sections(pdf_path, output_dir, dpi)
+            
+            # Second pass - post-process entire form
+            self.logger.info("Starting second pass - post-processing form data...")
+            try:
+                final_results = self._post_process_form(first_pass_results)
+                self.logger.info("✓ Post-processing completed successfully")
+            except Exception as e:
+                self.logger.error(f"Error in post-processing: {str(e)}")
+                final_results = first_pass_results
 
-        self.logger.info("\nForm processing completed successfully")
-        return final_results
+            self.logger.info("Form processing completed successfully")
+            return final_results
+            
+        finally:
+            self.current_file = None  # Clear current file when done
 
-    def _process_sections(self, pdf_path: str, output_dir: str, dpi: int) -> Dict:
+    def _process_sections(self, pdf_path: Path, output_dir: Path, dpi: int) -> Dict:
         """Process individual sections of the form."""
-        sections_dir = os.path.join(output_dir, "sections")
-        os.makedirs(sections_dir, exist_ok=True)
+        sections_dir = output_dir / "sections"
+        sections_dir.mkdir(exist_ok=True)
         
         # Split PDF into sections
         sections = self._split_pdf_sections(pdf_path, sections_dir, dpi)
@@ -120,12 +156,29 @@ class FormProcessor:
         # Process each section
         results = {}
         for i, section in enumerate(sections, 1):
-            self.logger.info(f"\nProcessing section {i}/{len(sections)}: {section.name}")
+            self.logger.info(f"Processing section {i}/{len(sections)}: {section.name}")
             try:
+                # Get OCR data
+                self.logger.info("Sending request to Document Analyzer...")
                 ocr_data = self.document_analyzer.analyze_local_document(section.path)
+                
+                # Log OCR results
+                cleaned_ocr = {
+                    "text": ocr_data.get("paragraphs", []),
+                    "fields": ocr_data.get("form_fields", []),
+                    "key_value_pairs": ocr_data.get("key_value_pairs", {})
+                }
+                self.logger.info("OCR Results:")
+                self.logger.info(f"Text found: {json.dumps(cleaned_ocr['text'], ensure_ascii=False, indent=2)}")
+                self.logger.info(f"Fields found: {json.dumps(cleaned_ocr['fields'], ensure_ascii=False, indent=2)}")
+                self.logger.info(f"Key-Value pairs: {json.dumps(cleaned_ocr['key_value_pairs'], ensure_ascii=False, indent=2)}")
+                self.logger.info("✓ Document analysis completed")
+                
+                # Prepare prompt and process with GPT
                 section_prompt = self._prepare_section_prompt(section.name)
                 section_data = self._process_with_gpt(section_prompt, ocr_data)
                 results[section.name] = section_data
+                
             except Exception as e:
                 self.logger.error(f"Error processing section {section.name}: {str(e)}")
                 results[section.name] = {}
@@ -158,13 +211,13 @@ class FormProcessor:
             self.logger.error(f"Error in post-processing: {str(e)}")
             return first_pass_results
 
-    def _split_pdf_sections(self, pdf_path: str, output_dir: str, dpi: int) -> List[Section]:
+    def _split_pdf_sections(self, pdf_path: Path, output_dir: Path, dpi: int) -> List[Section]:
         """Split PDF into sections based on configuration."""
         self.logger.info("Starting PDF splitting process...")
         
         try:
             self.logger.info("Opening PDF document...")
-            pdf_document = fitz.open(pdf_path)
+            pdf_document = fitz.open(str(pdf_path))
             page = pdf_document[0]  # First page only
             self.logger.info("✓ PDF opened successfully")
             
@@ -183,21 +236,22 @@ class FormProcessor:
             self.logger.info(f"Processing {len(sorted_configs)} sections...")
             
             for i, config in enumerate(sorted_configs, 1):
-                self.logger.info(f"\nProcessing section {i}/{len(sorted_configs)}: {config['name']}")
+                section_name = config['name']
+                self.logger.info(f"Processing section {i}/{len(sorted_configs)}: {section_name}")
                 y_start = config['y_start']
                 y_end = sorted_configs[i]['y_start'] if i < len(sorted_configs) else height
                 
                 self.logger.info(f"Section coordinates - y_start: {y_start}, y_end: {y_end}")
                 
                 if y_start >= y_end:
-                    self.logger.warning(f"Skipping section '{config['name']}' due to invalid coordinates")
+                    self.logger.warning(f"Skipping section '{section_name}' due to invalid coordinates")
                     continue
                     
                 section = Section(
-                    name=config['name'],
+                    name=section_name,
                     y_start=y_start,
                     y_end=y_end,
-                    path=os.path.join(output_dir, f"{config['name']}.png")
+                    path=str(output_dir / f"{section_name}.png")
                 )
                 
                 # Crop and save section
@@ -205,7 +259,7 @@ class FormProcessor:
                 section_img = img.crop((0, y_start, width, y_end))
                 section_img.save(section.path)
                 sections.append(section)
-                self.logger.info(f"✓ Section {config['name']} processed successfully")
+                self.logger.info(f"✓ Section {section_name} processed successfully")
 
             pdf_document.close()
             self.logger.info(f"PDF splitting completed. Generated {len(sections)} section images.")
@@ -223,7 +277,6 @@ class FormProcessor:
         section_schema = self.schema.get(section_name, {})
         
         # Create a clean, formatted schema string
-        # Using ensure_ascii=False to properly handle Hebrew characters
         schema_str = json.dumps(section_schema, ensure_ascii=False, indent=2)
         
         # Load the base prompt and add the section-specific information
@@ -246,10 +299,6 @@ class FormProcessor:
                 "fields": ocr_data.get("form_fields", []),
                 "key_value_pairs": ocr_data.get("key_value_pairs", {})
             }
-
-            print("cleaned_ocr:")
-            print(cleaned_ocr)
-            print()
             
             # Create messages with proper encoding
             messages = [
@@ -259,27 +308,19 @@ class FormProcessor:
                 ),
                 Message(
                     role=MessageRole.USER,
-                    # Using ensure_ascii=False to properly handle Hebrew characters
                     content=f"Here is the scanned text:\n {json.dumps(cleaned_ocr, ensure_ascii=False)}"
                 )
             ]
 
-            print("messages")
-            print(messages)
-            print()
-
             self.logger.info("Sending request to GPT...")
-            self.logger.debug(f"System message length: {len(messages[0].content)}")
-            self.logger.debug(f"User message length: {len(messages[1].content)}")
-
+            
             # Process with GPT
             response = self.gpt_client.chat(messages, json_response=True)
-
-            print("response")
-            print(response)
-            print()
             
             self.logger.info("✓ GPT processing completed successfully")
+            self.logger.info("GPT Response:")
+            self.logger.info(json.dumps(response, ensure_ascii=False, indent=2))
+            
             return response
             
         except Exception as e:
@@ -287,44 +328,7 @@ class FormProcessor:
             return {}
 
     @staticmethod
-    def _load_file(path: str) -> str:
-        """Load text file content."""
-        with open(path, 'r', encoding='utf-8') as f:
-            return f.read().strip()  # Strip to remove any extra whitespace
-
-    @staticmethod
-    def _load_json(path: str) -> Dict:
+    def _load_json(path: Path) -> Dict:
         """Load JSON file content."""
         with open(path, 'r', encoding='utf-8') as f:
-            # Using ensure_ascii=False when loading to properly handle Hebrew characters
             return json.load(f)
-
-
-def main():
-    logger = logging.getLogger('FormProcessor')
-    logger.info("\nStarting form processing application...")
-    
-    try:
-        processor = FormProcessor()
-        form_path = os.path.join("files", "generated_pdfs", "form_1.pdf")
-        
-        # Process form with both passes
-        results = processor.process_form(form_path)
-        
-        # Save results
-        output_dir = os.path.join("files", "output")
-        os.makedirs(output_dir, exist_ok=True)
-        
-        output_path = os.path.join(output_dir, "processed_form.json")
-        with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(results, f, ensure_ascii=False, indent=2)
-        
-        logger.info(f"Processing complete. Results saved to {output_path}")
-        
-    except Exception as e:
-        logger.error(f"Error in main: {str(e)}")
-        raise
-
-if __name__ == "__main__":
-    main()
-
