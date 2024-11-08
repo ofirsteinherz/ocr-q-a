@@ -4,8 +4,8 @@ from pathlib import Path
 class Settings:
     def __init__(self):
         # Base directories
-        self.PACKAGE_ROOT = Path(__file__).parent.parent  # ocr_project/ocr_project
-        self.PROJECT_ROOT = self.PACKAGE_ROOT.parent      # ocr_project
+        self.PACKAGE_ROOT = Path(__file__).parent.parent
+        self.PROJECT_ROOT = self.PACKAGE_ROOT.parent
         
         # Directory paths
         self.CONFIG_DIR = self.PROJECT_ROOT / "config"
@@ -13,23 +13,32 @@ class Settings:
         self.OUTPUT_DIR = self.PROJECT_ROOT / "output"
         self.LOGS_DIR = self.PROJECT_ROOT / "logs"
         
-        # Create necessary directories
-        for directory in [self.CONFIG_DIR, self.RESOURCES_DIR, self.OUTPUT_DIR, self.LOGS_DIR]:
-            directory.mkdir(exist_ok=True)
-            
-        # File paths - Updated to use RESOURCES_DIR
-        self.RAW_PDF_PATH = self.RESOURCES_DIR / "283_raw.pdf"
-        self.FORM_ELEMENTS_JSON = self.RESOURCES_DIR / "form_elements.json"  # Changed from CONFIG_DIR
-        self.FORM_TEMPLATE_CSV = self.RESOURCES_DIR / "form_template.csv"    # Changed from CONFIG_DIR
+        # Prompts directory
+        self.PROMPTS_DIR = self.RESOURCES_DIR / "prompts"
         
         # Output paths
         self.GENERATED_PDFS_DIR = self.OUTPUT_DIR / "generated_pdfs"
         self.TEMP_DIR = self.OUTPUT_DIR / "temp"
         self.MASTER_DATA_CSV = self.OUTPUT_DIR / "master_data.csv"
+        self.ANALYZED_FORMS_DIR = self.OUTPUT_DIR / "analyzed_forms"
         
-        # Create output directories
-        self.GENERATED_PDFS_DIR.mkdir(exist_ok=True)
-        self.TEMP_DIR.mkdir(exist_ok=True)
+        # All directories that need to be created
+        self.GENERATED_DIRS = [
+            self.OUTPUT_DIR,
+            self.LOGS_DIR,
+            self.GENERATED_PDFS_DIR,
+            self.TEMP_DIR,
+            self.ANALYZED_FORMS_DIR
+        ]
+        
+        # Create all directories
+        for directory in [self.CONFIG_DIR, self.RESOURCES_DIR] + self.GENERATED_DIRS:
+            directory.mkdir(exist_ok=True)
+            
+        # File paths
+        self.RAW_PDF_PATH = self.RESOURCES_DIR / "283_raw.pdf"
+        self.FORM_ELEMENTS_JSON = self.RESOURCES_DIR / "form_elements.json"
+        self.FORM_TEMPLATE_CSV = self.RESOURCES_DIR / "form_template.csv"
         
         # Font settings
         self.FONT_PATH = "/usr/share/fonts/dejavu/DejaVuSans.ttf"
@@ -37,14 +46,18 @@ class Settings:
         # Processing settings
         self.PDF_ZOOM = 3
         self.NUM_PDFS_TO_GENERATE = 100
+
+    def get_prompt(self, prompt_name: str) -> str:
+        """Get the content of a specific prompt file from the prompts directory"""
+        prompt_path = self.PROMPTS_DIR / f"{prompt_name}.txt"
         
-    def get_temp_path(self, filename):
-        """Get path for temporary files"""
-        return self.TEMP_DIR / filename
-        
-    def get_output_pdf_path(self, filename):
-        """Get path for generated PDF files"""
-        return self.GENERATED_PDFS_DIR / filename
+        try:
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+        except Exception as e:
+            raise Exception(f"Error reading prompt file {prompt_path}: {str(e)}")
 
     def validate_required_files(self):
         """Validate that all required files exist"""
