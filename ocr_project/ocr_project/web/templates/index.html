@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF OCR Processor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #dc2626;
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background-color: #fee2e2;
+            border-radius: 0.375rem;
+            display: none;
+        }
+        .progress-container {
+            display: none;
+            margin-top: 1.5rem;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .progress-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .progress-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+        .progress-step.active {
+            opacity: 1;
+        }
+        .progress-step.completed {
+            opacity: 1;
+            color: #4CAF50;
+        }
+        .progress-step.error {
+            color: #dc2626;
+            opacity: 1;
+        }
+        .step-icon {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            font-weight: 500;
+        }
+        .active .step-icon {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .completed .step-icon {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .error .step-icon {
+            background-color: #dc2626;
+            color: white;
+        }
+        .step-content {
+            flex-grow: 1;
+        }
+        .step-text {
+            display: block;
+            font-weight: 500;
+            color: #111827;
+        }
+        .step-details {
+            display: block;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        /* JSON Viewer Styles */
+        .json-viewer {
+            margin-top: 2rem;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .json-section {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem;
+        }
+        .json-section:last-child {
+            border-bottom: none;
+        }
+        .json-title {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+        .json-content {
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            color: #374151;
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            overflow-x: auto;
+            direction: ltr; /* Ensure proper display of JSON */
+        }
+        /* Add specific style for RTL content */
+        .rtl-content {
+            direction: rtl;
+            text-align: right;
+        }
+        .collapsible {
+            cursor: pointer;
+            padding: 1rem;
+            width: 100%;
+            text-align: left;
+            background-color: #f9fafb;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .collapsible:hover {
+            background-color: #f3f4f6;
+        }
+        .collapsible:after {
+            content: '\002B';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+        .active:after {
+            content: '\2212';
+        }
+        .content {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold mb-6">PDF OCR Processor</h1>
+        
+        <div class="form-group">
+            <label for="pdfFile" class="block text-sm font-medium text-gray-700 mb-2">Select PDF file:</label>
+            <input type="file" id="pdfFile" accept=".pdf" class="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-green-50 file:text-green-700
+                hover:file:bg-green-100"/>
+        </div>
+        
+        <button id="processBtn" class="btn">Process PDF</button>
+        <div id="error" class="error"></div>
+        
+        <div id="progressContainer" class="progress-container">
+            <h3 class="text-lg font-semibold mb-4">Processing Status</h3>
+            <ul class="progress-steps">
+                <li class="progress-step" data-step="start">
+                    <div class="step-icon">1</div>
+                    <div class="step-content">
+                        <span class="step-text">Initialize Processing</span>
+                        <span class="step-details"></span>
+                    </div>
+                </li>
+                <li class="progress-step" data-step="split">
+                    <div class="step-icon">2</div>
+                    <div class="step-content">
+                        <span class="step-text">Split PDF</span>
+                        <span class="step-details"></span>
+                    </div>
+                </li>
+                <li class="progress-step" data-step="analyze">
+                    <div class="step-icon">3</div>
+                    <div class="step-content">
+                        <span class="step-text">Analyze Sections</span>
+                        <span class="step-details"></span>
+                    </div>
+                </li>
+                <li class="progress-step" data-step="extract">
+                    <div class="step-icon">4</div>
+                    <div class="step-content">
+                        <span class="step-text">Extract Text</span>
+                        <span class="step-details"></span>
+                    </div>
+                </li>
+                <li class="progress-step" data-step="process">
+                    <div class="step-icon">5</div>
+                    <div class="step-content">
+                        <span class="step-text">Process Data</span>
+                        <span class="step-details"></span>
+                    </div>
+                </li>
+                <li class="progress-step" data-step="complete">
+                    <div class="step-icon">✓</div>
+                    <div class="step-content">
+                        <span class="step-text">Complete</span>
+                        <span class="step-details"></span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div id="result" class="json-viewer"></div>
+    </div>
+
+    
+    <script>
+        const pdfInput = document.getElementById('pdfFile');
+        const processBtn = document.getElementById('processBtn');
+        const errorDiv = document.getElementById('error');
+        const progressContainer = document.getElementById('progressContainer');
+        const resultDiv = document.getElementById('result');
+
+        function normalizeJSON(data) {
+            if (typeof data === 'string') {
+                try {
+                    // First remove any leading/trailing whitespace
+                    data = data.trim();
+                    
+                    // Handle double-encoded JSON
+                    let parsed = JSON.parse(data);
+                    while (typeof parsed === 'string') {
+                        parsed = JSON.parse(parsed);
+                    }
+                    return parsed;
+                } catch (e) {
+                    console.error('Error parsing JSON:', e);
+                    // If parsing fails, try to clean the string
+                    try {
+                        const cleaned = data
+                            .replace(/\n/g, '')
+                            .replace(/\r/g, '')
+                            .replace(/\t/g, '')
+                            .replace(/\\/g, '\\\\')
+                            .replace(/"\{/g, '{')
+                            .replace(/\}"/g, '}');
+                        return JSON.parse(cleaned);
+                    } catch (e2) {
+                        console.error('Error parsing cleaned JSON:', e2);
+                        return data;
+                    }
+                }
+            }
+            return data;
+        }
+
+        function formatValue(value) {
+            if (typeof value === 'boolean') {
+                return value ? '✓ Yes' : '✗ No';
+            }
+            if (value === null || value === undefined || value === '') {
+                return '-';
+            }
+            return value;
+        }
+
+        function createFieldDisplay(field) {
+            const div = document.createElement('div');
+            div.className = 'mb-2';
+
+            const label = document.createElement('span');
+            label.className = 'font-medium text-gray-700 rtl-content';
+            label.textContent = field.label + ': ';
+            div.appendChild(label);
+
+            if (field.sub_fields) {
+                const subFieldsDiv = document.createElement('div');
+                subFieldsDiv.className = 'ml-4 mt-1';
+                field.sub_fields.forEach(subField => {
+                    const subDiv = document.createElement('div');
+                    subDiv.className = 'flex items-center gap-2 rtl-content';
+                    subDiv.textContent = `${subField.label}: ${formatValue(subField.value)}`;
+                    subFieldsDiv.appendChild(subDiv);
+                });
+                div.appendChild(subFieldsDiv);
+            } else {
+                const value = document.createElement('span');
+                value.className = 'text-gray-900 rtl-content';
+                value.textContent = formatValue(field.value);
+                div.appendChild(value);
+            }
+
+            return div;
+        }
+
+        function createCollapsibleSection(title, content) {
+            const section = document.createElement('div');
+            section.className = 'json-section mb-4';
+            
+            const button = document.createElement('button');
+            button.className = 'collapsible w-full text-right rtl-content';
+            button.textContent = content.title || title;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'content';
+            
+            const fieldsDiv = document.createElement('div');
+            fieldsDiv.className = 'p-4';
+
+            if (content.fields) {
+                content.fields.forEach(field => {
+                    fieldsDiv.appendChild(createFieldDisplay(field));
+                });
+            }
+            
+            contentDiv.appendChild(fieldsDiv);
+            section.appendChild(button);
+            section.appendChild(contentDiv);
+            
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const content = this.nextElementSibling;
+                if (content.style.maxHeight) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+            
+            return section;
+        }
+
+        function formatResult(data) {
+            if (!data) return '';
+            
+            resultDiv.innerHTML = '';
+            
+            // Normalize the JSON data
+            const normalizedData = normalizeJSON(data);
+            
+            // Create the viewer container
+            const viewerContainer = document.createElement('div');
+            viewerContainer.className = 'bg-white rounded-lg shadow-sm p-4 mt-4';
+            
+            Object.entries(normalizedData).forEach(([section, content]) => {
+                const sectionElement = createCollapsibleSection(section, content);
+                viewerContainer.appendChild(sectionElement);
+            });
+            
+            resultDiv.appendChild(viewerContainer);
+            resultDiv.style.display = 'block';
+        }
+
+    function updateProgress(data) {
+        const steps = document.querySelectorAll('.progress-step');
+        let foundCurrent = false;
+        
+        steps.forEach(stepElement => {
+            const detailsSpan = stepElement.querySelector('.step-details');
+            
+            stepElement.className = 'progress-step';
+            detailsSpan.textContent = '';
+            
+            if (data.error) {
+                if (stepElement.dataset.step === data.step) {
+                    stepElement.className = 'progress-step error';
+                    detailsSpan.textContent = data.error;
+                }
+                return;
+            }
+            
+            if (foundCurrent) return;
+            
+            if (stepElement.dataset.step === data.step) {
+                stepElement.className = 'progress-step active';
+                detailsSpan.textContent = data.details || '';
+                if (data.status === 'complete') {
+                    stepElement.className = 'progress-step completed';
+                }
+                foundCurrent = true;
+            } else if (!foundCurrent) {
+                stepElement.className = 'progress-step completed';
+            }
+        });
+    }
+    
+    async function checkProgress() {
+        try {
+            const response = await fetch('/progress');
+            const data = await response.json();
+            
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+            
+            updateProgress(data);
+            
+            if (data.status !== 'complete' && data.status !== 'error') {
+                setTimeout(checkProgress, 500);
+            }
+        } catch (error) {
+            console.error('Error checking progress:', error);
+        }
+    }
+
+    processBtn.addEventListener('click', async () => {
+            if (!pdfInput.files.length) {
+                errorDiv.textContent = 'Please select a PDF file';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const file = pdfInput.files[0];
+            if (!file.type.includes('pdf')) {
+                errorDiv.textContent = 'Please select a valid PDF file';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            errorDiv.style.display = 'none';
+            resultDiv.style.display = 'none';
+            progressContainer.style.display = 'block';
+            processBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('pdf', file);
+
+            try {
+                checkProgress();
+
+                const response = await fetch('/process', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                let data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Processing failed');
+                }
+
+                formatResult(data);
+            } catch (error) {
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                processBtn.disabled = false;
+            }
+        });
+</script>
+</body>
+</html>

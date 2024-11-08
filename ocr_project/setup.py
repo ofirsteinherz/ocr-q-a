@@ -12,7 +12,8 @@ setup(
         'python-dotenv',
         'pandas',
         'requests',
-        'faker'
+        'faker',
+        'flask'
     ],
     package_data={
         'ocr_project': ['config/*', 'resources/*'],
@@ -20,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'run-ocr=ocr_project.services.main:main',
+            'run-web=ocr_project.web.app:main', 
         ],
     }
 )
