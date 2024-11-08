@@ -17,10 +17,10 @@ def process_document(form_path: Path, analyzer: DocumentAnalyzer, client: GPTCli
 
         # Get the OCR analysis prompt
         try:
-            prompt = settings.get_prompt("ocr_analysis")
+            prompt = settings.get_prompt("play_ground_ocr")
         except FileNotFoundError as e:
             print(f"Error: {e}")
-            print("Make sure the prompt file exists at:", settings.PROMPTS_DIR / "ocr_analysis.txt")
+            print("Make sure the prompt file exists at:", settings.PROMPTS_DIR / "play_ground_ocr.txt")
             return None
         except Exception as e:
             print(f"Error reading prompt: {e}")
