@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 from ocr_project.config.settings import settings
-from ocr_project.services.batch_ocr_service import BatchOCRService
+from ocr_project.core.batch_ocr_service import BatchOCRService
 
 def setup_logging():
     """Configure logging for the OCR runner"""
