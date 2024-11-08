@@ -1,0 +1,372 @@
+{
+    "sections": [
+        {
+            "id": "header",
+            "title": "",
+            "fields": [
+                {
+                    "label": "אל קופ״ח/בי״ח",
+                    "value": "מאיר כפ״ס",
+                    "x": 375,
+                    "y": 130,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "תאריך מילוי הטופס",
+                    "value": "3  4  5  3  2  4  4  4",
+                    "x": 65,
+                    "y": 98,
+                    "font_size": 12,
+                    "type": "date"
+                },
+                {
+                    "label": "תאריך קבלת הטופס בקופה",
+                    "value": "3  4  5  3  2  4  4  4",
+                    "x": 213,
+                    "y": 102,
+                    "font_size": 12,
+                    "type": "date"
+                }
+            ]
+        },
+        {
+            "id": "section1",
+            "title": "תאריך הפגיעה",
+            "fields": [
+                {
+                    "label": "תאריך הפגיעה",
+                    "value": "3  4  5  3  2  4  4  4",
+                    "x": 248,
+                    "y": 180,
+                    "font_size": 11,
+                    "type": "date"
+                }
+            ]
+        },
+        {
+            "id": "section2",
+            "title": "פרטי התובע",
+            "fields": [
+                {
+                    "label": "שם משפחה",
+                    "value": "טננבוים",
+                    "x": 450,
+                    "y": 250,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "שם פרטי",
+                    "value": "יהודה",
+                    "x": 280,
+                    "y": 250,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "ת.ז",
+                    "value": "8  7  7  5  2  4  5  6  3  1",
+                    "x": 76,
+                    "y": 250,
+                    "font_size": 13,
+                    "type": "text"
+                },
+                {
+                    "label": "תאריך לידה",
+                    "value": "0 2 0 2 1 9 9 5",
+                    "x": 170,
+                    "y": 290,
+                    "font_size": 15,
+                    "type": "date"
+                },
+                {
+                    "label": "מין",
+                    "sub_fields": [
+                        {
+                            "label": "זכר",
+                            "value": "V",
+                            "x": 505,
+                            "y": 290,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "נקבה",
+                            "value": "",
+                            "x": 456,
+                            "y": 290,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        }
+                    ]
+                },
+                {
+                    "label": "רחוב",
+                    "value": "הרמב״ם",
+                    "x": 417,
+                    "y": 348,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "מס' בית",
+                    "value": "16",
+                    "x": 360,
+                    "y": 348,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "כניסה",
+                    "value": "1",
+                    "x": 313,
+                    "y": 348,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "דירה",
+                    "value": "12",
+                    "x": 260,
+                    "y": 348,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "יישוב",
+                    "value": "אבן יהודה",
+                    "x": 120,
+                    "y": 348,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "מיקוד",
+                    "value": "312422",
+                    "x": 50,
+                    "y": 348,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "טלפון קווי",
+                    "value": "1  2  3  4  5  6  7  8  2  3",
+                    "x": 360,
+                    "y": 385,
+                    "font_size": 11.5,
+                    "type": "phone_number"
+                },
+                {
+                    "label": "טלפון נייד",
+                    "value": "0  5  0  2  4  7  4  9  4  7",
+                    "x": 105,
+                    "y": 385,
+                    "font_size": 11.5,
+                    "type": "phone_number"
+                }
+            ]
+        },
+        {
+            "id": "section3",
+            "title": "פרטי התאונה",
+            "fields": [
+                {
+                    "label": "בתאריך",
+                    "value": "16.04.2022",
+                    "x": 429,
+                    "y": 440,
+                    "font_size": 12,
+                    "type": "date"
+                },
+                {
+                    "label": "בשעה",
+                    "value": "19:00",
+                    "x": 333,
+                    "y": 440,
+                    "font_size": 12,
+                    "type": "time"
+                },
+                {
+                    "label": "כאשר עבדתי ב",
+                    "value": "מלצרות",
+                    "x": 100,
+                    "y": 440,
+                     "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "מקום התאונה",
+                    "sub_fields": [
+                        {
+                            "label": "מפעל",
+                            "value": "V",
+                            "x": 485,
+                            "y": 470,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "ת. דרכים בעבודה",
+                            "value": "V",
+                            "x": 437,
+                            "y": 470,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "ת. דרכים בדרך לעבודה/מהעבודה",
+                            "value": "V",
+                            "x": 355,
+                            "y": 470,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "תאונה בדרך לא רכב",
+                            "value": "V",
+                            "x": 215,
+                            "y": 470,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "אחר",
+                            "value": "V",
+                            "x": 118,
+                            "y": 470,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        }
+                    ]
+                },
+                {
+                    "label": "כתובת מקום התאונה",
+                    "value": "הירדן 8, תל אביב",
+                    "x": 137,
+                    "y": 500,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "נסיבות הפגיעה / תיאור התאונה",
+                    "value": "החלקתי בגלל שהרצפה היתה רטובה ולא היה שום שלט אזהרה.",
+                    "x": 75,
+                    "y": 520,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "האיבר שנפגע",
+                    "value": "יד שמאל",
+                    "x": 200,
+                    "y": 564,
+                    "font_size": 12,
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "id": "section4",
+            "title": "הצהרה",
+            "fields": [
+                {
+                    "label": "שם המבקש",
+                    "value": "טננבוים יהודה",
+                    "x": 400,
+                    "y": 660,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "חתימה",
+                    "value": "signed",
+                    "x": 80,
+                    "y": 660,
+                    "font_size": 12,
+                    "type": "text"
+                }
+            ]
+        },
+        {
+            "id": "section5",
+            "title": "למילוי ע״י המוסד הרפואי",
+            "fields": [
+                {
+                    "label": "סטטוס חברות בקופת חולים",
+                    "sub_fields": [
+                        {
+                            "label": "הנפגע חבר בקופת חולים",
+                            "value": "V",
+                            "x": 525,
+                            "y": 716,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "הנפגע אינו חבר בקופת חולים",
+                            "value": "V",
+                            "x": 525,
+                            "y": 735,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        }
+                    ]
+                },
+                {
+                    "label": "קופת חולים",
+                    "sub_fields": [
+                        {
+                            "label": "כללית",
+                            "value": "V",
+                            "x": 410,
+                            "y": 717,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "מאוחדת",
+                            "value": "V",
+                            "x": 366,
+                            "y": 717,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "מכבי",
+                            "value": "V",
+                            "x": 312,
+                            "y": 717,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        },
+                        {
+                            "label": "לאומית",
+                            "value": "V",
+                            "x": 272,
+                            "y": 717,
+                            "font_size": 12,
+                            "type": "checkbox"
+                        }
+                    ]
+                },
+                {
+                    "label": "אבחנה רפואית 1",
+                    "value": "2  3  4  4",
+                    "x": 320,
+                    "y": 752,
+                    "font_size": 12,
+                    "type": "text"
+                },
+                {
+                    "label": "אבחנה רפואית 2",
+                    "value": "2  3  4  4",
+                    "x": 232,
+                    "y": 752,
+                    "font_size": 12,
+                    "type": "text"
+                }
+            ]
+        }
+    ]
+}
