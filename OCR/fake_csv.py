@@ -18,12 +18,38 @@ class FakeFormDataGenerator:
         digits = [str(random.randint(0, 9)) for _ in range(length)]
         return "  ".join(digits)
     
-    def generate_date(self, start_year: int = 2023) -> str:
-        """Generate a random date in DD.MM.YYYY format"""
+    def generate_phone_number(self) -> str:
+        """Generate an Israeli phone number with each digit separated by two spaces."""
+        # Prefix for Israeli phone numbers
+        prefix = "054"
+        
+        # Generate remaining 7 digits randomly
+        remaining_digits = [str(random.randint(0, 9)) for _ in range(7)]
+        
+        # Combine prefix and remaining digits, adding two spaces between each digit
+        full_number = prefix + "".join(remaining_digits)
+        formatted_number = "  ".join(full_number)  # Two spaces between each digit
+        
+        return formatted_number
+    
+    def generate_date(self, start_year: int = 2023, spaces: int = 0, add_divider: bool = True) -> str:
+        """Generate a random date in custom format with optional spaces and divider."""
         start_date = datetime(start_year, 1, 1)
         days = random.randint(0, 365)
         random_date = start_date + timedelta(days=days)
-        return random_date.strftime("%d.%m.%Y")
+        
+        # Choose divider based on `add_divider` flag
+        divider = "." if add_divider else ""
+        
+        # Format the date with chosen divider and space settings
+        formatted_date = random_date.strftime(f"%d{divider}%m{divider}%Y")
+        
+        # Add spaces if requested
+        if spaces > 0:
+            space_str = ' ' * spaces
+            formatted_date = space_str.join(formatted_date)
+        
+        return formatted_date
     
     def generate_time(self) -> str:
         """Generate a random time in HH:MM format"""
@@ -87,25 +113,25 @@ class FakeFormDataGenerator:
         data = [
             # Headers
             ("header|אל קופ״ח/בי״ח", self.fake.city()),
-            ("header|תאריך מילוי הטופס", self.generate_spaced_number(8)),
-            ("header|תאריך קבלת הטופס בקופה", self.generate_spaced_number(8)),
+            ("header|תאריך מילוי הטופס", self.generate_date(spaces=2, add_divider=False)),
+            ("header|תאריך קבלת הטופס בקופה", self.generate_date(spaces=2, add_divider=False)),
             
             # Section 1
-            ("section1|תאריך הפגיעה", self.generate_spaced_number(8)),
+            ("section1|תאריך הפגיעה", self.generate_date(spaces=2, add_divider=False)),
             
             # Section 2 - Personal Info
             ("section2|שם משפחה", self.fake.last_name()),
             ("section2|שם פרטי", self.fake.first_name()),
             ("section2|ת.ז", self.generate_spaced_number(10)),
-            ("section2|תאריך לידה", self.generate_number(8)),
+            ("section2|תאריך לידה", self.generate_date(spaces=1, add_divider=False)),
             ("section2|רחוב", self.fake.street_name()),
             ("section2|מס' בית", str(random.randint(1, 150))),
             ("section2|כניסה", str(random.randint(1, 4))),
             ("section2|דירה", str(random.randint(1, 40))),
             ("section2|יישוב", self.fake.city()),
             ("section2|מיקוד", str(random.randint(100000, 999999))),
-            ("section2|טלפון קווי", self.generate_spaced_number(10)),
-            ("section2|טלפון נייד", self.generate_spaced_number(10)),
+            ("section2|טלפון קווי", self.generate_phone_number()),
+            ("section2|טלפון נייד", self.generate_phone_number()),
             
             # Section 3 - Accident Details
             ("section3|בתאריך", self.generate_date()),

@@ -97,7 +97,8 @@ class GPTClient:
         self,
         image_source: Union[str, Path],
         prompt: str,
-        system_prompt: Optional[str] = None
+        system_prompt: Optional[str] = None,
+        json_response: bool = False
     ) -> str:
         """Analyze a single image with an optional system prompt"""
         messages = []
@@ -128,19 +129,19 @@ class GPTClient:
                 content=image_content
             ))
             
-            return self._send_request(messages)
+            return self._send_request(messages, json_response)
             
         except Exception as e:
             raise GPTResponseError(f"Failed to analyze image: {str(e)}")
 
-    def chat(self, messages: List[Message]) -> str:
+    def chat(self, messages: List[Message], json_response: bool = False) -> str:
         """Have a text-only conversation with multiple messages"""
         try:
-            return self._send_request(messages)
+            return self._send_request(messages, json_response)
         except Exception as e:
             raise GPTResponseError(f"Chat error: {str(e)}")
 
-    def _send_request(self, messages: List[Message]) -> str:
+    def _send_request(self, messages: List[Message], json_response: bool = False) -> str:
         """Send request to GPT API"""
         payload = {
             "messages": [
@@ -151,8 +152,11 @@ class GPTClient:
             ],
             "temperature": 0.7,
             "top_p": 0.95,
-            "max_tokens": 800
+            "max_tokens": 4096
         }
+
+        if json_response:
+            payload["response_format"] = {"type": "json_object"}
 
         try:
             response = requests.post(
