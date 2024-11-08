@@ -7,7 +7,7 @@ from ocr_project.core.ocr_service import OCRService
 import glob
 import time
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='templates/static')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
@@ -30,7 +30,7 @@ def get_latest_log():
         latest_log = max(log_files, key=os.path.getctime)
         
         # Read the file and get relevant information
-        with open(latest_log, 'r') as f:
+        with open(latest_log, 'r', encoding='utf-8') as f:
             lines = f.readlines()
             if not lines:
                 return None
@@ -68,8 +68,12 @@ def index():
 def get_progress():
     progress = get_latest_log()
     if progress:
+        # Make sure we're setting status correctly for completion
+        if progress.get('step') == 'complete':
+            progress['status'] = 'complete'
         return jsonify(progress)
     return jsonify({"step": "waiting", "details": "Waiting to start..."})
+
 @app.route('/process', methods=['POST'])
 def process_pdf():
     if 'pdf' not in request.files:
@@ -103,10 +107,16 @@ def process_pdf():
             except json.JSONDecodeError:
                 pass
         
+        # Add a status field to indicate completion
+        if isinstance(result, dict):
+            result['status'] = 'complete'
+        
         return jsonify(result)
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': str(e), 'status': 'error'}), 500
 
 if __name__ == '__main__':
+    # Ensure logs directory exists
+    os.makedirs(LOGS_DIR, exist_ok=True)
     app.run(debug=True)

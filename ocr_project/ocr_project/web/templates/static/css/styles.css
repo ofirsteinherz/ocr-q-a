@@ -1,0 +1,233 @@
+:root {
+    --primary-color: #1a365d;
+    --text-primary: #1a202c;
+    --text-secondary: #4a5568;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f7fafc;
+    --border-color: #e2e8f0;
+    --blue-badge: #ebf8ff;
+    --blue-text: #2c5282;
+    --green-badge: #f0fff4;
+    --green-text: #276749;
+    --purple-badge: #faf5ff;
+    --purple-text: #553c9a;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --radius: 0.5rem;
+    --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+}
+
+/* Upload Section */
+.upload-section {
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.upload-form {
+    max-width: 400px;
+    margin: 2rem auto;
+}
+
+.file-input-container {
+    margin-bottom: 1rem;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-label {
+    display: block;
+    padding: 1rem;
+    background-color: var(--bg-primary);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.file-label:hover {
+    border-color: var(--primary-color);
+}
+
+.submit-button {
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.submit-button:hover {
+    opacity: 0.9;
+}
+
+/* Progress Section */
+.progress-section {
+    margin-bottom: var(--spacing-lg);
+}
+
+.progress-steps {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.step-icon {
+    width: 2rem;
+    height: 2rem;
+    background-color: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-weight: bold;
+}
+
+.step.active .step-icon {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.step.completed .step-icon {
+    background-color: var(--green-text);
+    color: white;
+    border-color: var(--green-text);
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-text {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.step-details {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Card Styles */
+.card {
+    background-color: var(--bg-primary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.card-wide {
+    grid-column: span 2;
+}
+
+.card-header {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.card-content {
+    padding: var(--spacing-md);
+}
+
+/* Info Grid */
+.info-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--spacing-sm) var(--spacing-md);
+}
+
+.medical-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.medical-item.full-width {
+    grid-column: span 2;
+}
+
+/* Labels and Values */
+.label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.value {
+    font-weight: 500;
+}
+
+/* Error Message */
+.error {
+    color: #e53e3e;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+/* Block Sections */
+.address-block,
+.injury-block,
+.description-block {
+    margin-top: var(--spacing-md);
+}
+
+.address-block .value,
+.injury-block .value,
+.description-block .value {
+    margin-top: var(--spacing-sm);
+}
