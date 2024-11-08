@@ -10,3 +10,261 @@ where each section was processed individually. Your task is to:
 Please return the processed data in the same JSON structure, with any corrections or additions clearly 
 marked in your response. If you make any changes, please ensure they are logical and well-justified based 
 on the context of the entire form.
+
+The JSON format you have to follow:
+{
+  "header": {
+    "title": "Form Header",
+    "fields": [
+      {
+        "label": "אל קופ״ח/בי״ח",
+        "value": null
+      },
+      {
+        "label": "תאריך מילוי הטופס",
+        "value": null
+      },
+      {
+        "label": "תאריך קבלת הטופס בקופה",
+        "value": null
+      }
+    ]
+  },
+  "section1": {
+    "title": "תאריך הפגיעה",
+    "fields": [
+      {
+        "label": "תאריך הפגיעה",
+        "value": null
+      }
+    ]
+  },
+  "section2": {
+    "title": "פרטי התובע",
+    "fields": [
+      {
+        "label": "שם משפחה",
+        "value": null
+      },
+      {
+        "label": "שם פרטי",
+        "value": null
+      },
+      {
+        "label": "ת.ז",
+        "value": null
+      },
+      {
+        "label": "תאריך לידה",
+        "value": null
+      },
+      {
+        "label": "מין",
+        "sub_fields": [
+          {
+            "label": "זכר",
+            "value": null
+          },
+          {
+            "label": "נקבה",
+            "value": null
+          }
+        ]
+      },
+      {
+        "label": "רחוב",
+        "value": null
+      },
+      {
+        "label": "מס' בית",
+        "value": null
+      },
+      {
+        "label": "כניסה",
+        "value": null
+      },
+      {
+        "label": "דירה",
+        "value": null
+      },
+      {
+        "label": "יישוב",
+        "value": null
+      },
+      {
+        "label": "מיקוד",
+        "value": null
+      },
+      {
+        "label": "טלפון קווי",
+        "value": null
+      },
+      {
+        "label": "טלפון נייד",
+        "value": null
+      }
+    ]
+  },
+  "section3": {
+    "title": "פרטי התאונה",
+    "fields": [
+      {
+        "label": "בתאריך",
+        "value": null
+      },
+      {
+        "label": "בשעה",
+        "value": null
+      },
+      {
+        "label": "כאשר עבדתי ב",
+        "value": null
+      },
+      {
+        "label": "מקום התאונה",
+        "sub_fields": [
+          {
+            "label": "מפעל",
+            "value": null
+          },
+          {
+            "label": "ת. דרכים בעבודה",
+            "value": null
+          },
+          {
+            "label": "ת. דרכים בדרך לעבודה/מהעבודה",
+            "value": null
+          },
+          {
+            "label": "תאונה בדרך לא רכב",
+            "value": null
+          },
+          {
+            "label": "אחר",
+            "value": null
+          }
+        ]
+      },
+      {
+        "label": "כתובת מקום התאונה",
+        "value": null
+      },
+      {
+        "label": "נסיבות הפגיעה / תיאור התאונה",
+        "value": null
+      },
+      {
+        "label": "האיבר שנפגע",
+        "value": null
+      }
+    ]
+  },
+  "section4": {
+    "title": "הצהרה",
+    "fields": [
+      {
+        "label": "שם המבקש",
+        "value": null
+      },
+      {
+        "label": "חתימה",
+        "value": null
+      }
+    ]
+  },
+  "section5": {
+    "title": "למילוי ע״י המוסד הרפואי",
+    "fields": [
+      {
+        "label": "סטטוס חברות בקופת חולים",
+        "sub_fields": [
+          {
+            "label": "הנפגע חבר בקופת חולים",
+            "value": null
+          },
+          {
+            "label": "הנפגע אינו חבר בקופת חולים",
+            "value": null
+          }
+        ]
+      },
+      {
+        "label": "קופת חולים",
+        "sub_fields": [
+          {
+            "label": "כללית",
+            "value": null
+          },
+          {
+            "label": "מאוחדת",
+            "value": null
+          },
+          {
+            "label": "מכבי",
+            "value": null
+          },
+          {
+            "label": "לאומית",
+            "value": null
+          }
+        ]
+      },
+      {
+        "label": "אבחנה רפואית 1",
+        "value": null
+      },
+      {
+        "label": "אבחנה רפואית 2",
+        "value": null
+      }
+    ]
+  }
+}
+
+
+
+Format Standards:
+
+1. Dates
+   - Format: "DD/MM/YYYY"
+   - Example: "23/04/2023"
+   - All dates must have leading zeros for days and months
+   - Year must be 4 digits
+
+2. Times
+   - Format: "HH:MM"
+   - Example: "17:49"
+   - 24-hour format
+   - Hours and minutes must have leading zeros
+
+3. Checkbox Values
+   - Format: true/false (boolean)
+   - Use true for checked items
+   - Use false for unchecked items
+   - Do NOT use: "V", "✓", "", "x", or any other markers
+
+4. ID Numbers (ת.ז)
+   - Format: 9-digit string
+   - Preserve leading zeros
+   - No spaces or dashes
+
+5. Phone Numbers
+   - Format: 10-digit string
+   - Must start with "05" for mobile or "0" for landline
+   - No spaces, dashes, or special characters
+   - Preserve leading zeros
+
+6. Text Fields
+   - Preserve Hebrew text as-is
+   - Remove any trailing/leading spaces
+   - Preserve case sensitivity
+   - For addresses: keep full text with punctuation
+
+7. Numeric Fields
+   - Medical codes: preserve as strings to maintain leading zeros
+   - House/apartment numbers: preserve as strings
+
+8. Empty Values
+   - Use null for missing data
+   - Use empty string "" only when intentionally blank
+   - Never use undefined
