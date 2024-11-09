@@ -30,16 +30,6 @@ class HTMLService:
         
         return logger
     
-    def process_single_file(self, filename: str) -> dict:
-        try:
-            self.logger.info(f"Processing file: {filename}")
-            result = self.processor.process_file(filename)
-            self.logger.info(f"Successfully processed file: {filename}")
-            return result
-        except Exception as e:
-            self.logger.error(f"Error processing file {filename}: {str(e)}")
-            return None
-    
     def process_all_files(self) -> dict:
         try:
             # Validate required files first
@@ -66,3 +56,5 @@ if __name__ == "__main__":
     # Process all files
     results = service.process_all_files()
     print(f"Processed {len(results)} files")
+
+    settings.clean_pycache()

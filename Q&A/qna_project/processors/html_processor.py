@@ -22,25 +22,10 @@ class HTMLProcessor:
         }
 
     def _parse_cell_content(self, cell_text):
-        """Parse a cell containing plan information into discount and conditions."""
+        """Keep the original cell text without parsing"""
         if not cell_text or cell_text == "ללא הנחה":
-            return {"discount": "0%", "conditions": "ללא הנחה"}
-        
-        parts = re.split('[,\\\\]', cell_text)
-        discount_part = parts[0].strip()
-        
-        if "חינם" in discount_part:
-            discount = "חינם"
-        else:
-            discount_match = re.search(r'(\d+)%', discount_part)
-            discount = f"{discount_match.group(1)}%" if discount_match else "0%"
-        
-        conditions = ", ".join(part.strip() for part in parts[1:]) if len(parts) > 1 else discount_part
-        
-        return {
-            "discount": discount,
-            "conditions": conditions
-        }
+            return "ללא הנחה"
+        return cell_text.strip()
 
     def _parse_service_cell(self, cell_text):
         """Parse a cell containing information for all three plans."""
@@ -56,11 +41,11 @@ class HTMLProcessor:
                 continue
                 
             if plan_text.startswith('זהב:'):
-                plans['gold'] = self._parse_cell_content(plan_text.replace('זהב:', '').strip())
+                plans['gold'] = plan_text.replace('זהב:', '').strip()
             elif plan_text.startswith('כסף:'):
-                plans['silver'] = self._parse_cell_content(plan_text.replace('כסף:', '').strip())
+                plans['silver'] = plan_text.replace('כסף:', '').strip()
             elif plan_text.startswith('ארד:'):
-                plans['bronze'] = self._parse_cell_content(plan_text.replace('ארד:', '').strip())
+                plans['bronze'] = plan_text.replace('ארד:', '').strip()
         
         return plans
 

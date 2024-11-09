@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 from typing import List, Tuple
 
@@ -16,9 +17,9 @@ class Settings:
         # Resource subdirectories
         self.RAW_HTML_DIR = self.RESOURCES_DIR / "raw_html"
         self.PROMPTS_DIR = self.RESOURCES_DIR / "prompts"
+        self.PROCESSED_HTML_DIR = self.RESOURCES_DIR / "processed_html"
         
         # Output subdirectories
-        self.PROCESSED_HTML_DIR = self.OUTPUT_DIR / "processed_html"
         self.TEMP_DIR = self.OUTPUT_DIR / "temp"
         
         # All directories that need to be created
@@ -32,6 +33,20 @@ class Settings:
         # Create all directories
         for directory in [self.RESOURCES_DIR] + self.GENERATED_DIRS:
             directory.mkdir(parents=True, exist_ok=True)
+
+    def clean_pycache(self):
+        """Remove all __pycache__ directories in the project"""
+        for root, dirs, files in os.walk(self.PROJECT_ROOT):
+            for dir in dirs:
+                if dir == "__pycache__":
+                    cache_path = Path(root) / dir
+                    print(f"Removing cache directory: {cache_path}")
+                    try:
+                        for file in cache_path.glob("*"):
+                            file.unlink()
+                        cache_path.rmdir()
+                    except Exception as e:
+                        print(f"Error removing {cache_path}: {e}")
 
     def validate_required_files(self) -> Tuple[bool, List[str]]:
         """Validate that all required HTML files exist"""
