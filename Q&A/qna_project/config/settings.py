@@ -21,6 +21,9 @@ class Settings:
         
         # Output subdirectories
         self.TEMP_DIR = self.OUTPUT_DIR / "temp"
+
+        # Prompts directory
+        self.PROMPTS_DIR = self.RESOURCES_DIR / "prompts"
         
         # All directories that need to be created
         self.GENERATED_DIRS = [
@@ -73,6 +76,18 @@ class Settings:
     def get_output_path(self, input_filename: str) -> Path:
         """Get the output path for a processed HTML file"""
         return self.PROCESSED_HTML_DIR / input_filename.replace('.html', '.json')
+    
+    def get_prompt(self, prompt_name: str) -> str:
+        """Get the content of a specific prompt file from the prompts directory"""
+        prompt_path = self.PROMPTS_DIR / f"{prompt_name}.txt"
+        
+        try:
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                return f.read().strip()
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+        except Exception as e:
+            raise Exception(f"Error reading prompt file {prompt_path}: {str(e)}")
 
 # Create a global settings instance
 settings = Settings()

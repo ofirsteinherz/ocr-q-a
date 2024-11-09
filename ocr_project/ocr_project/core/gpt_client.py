@@ -173,7 +173,7 @@ class GPTClient:
             raise GPTResponseError(f"Request failed: {str(e)}")
         
 # # Example use:
-#  
+ 
 # import os
 # from dotenv import load_dotenv
 
