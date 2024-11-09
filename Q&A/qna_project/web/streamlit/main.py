@@ -91,7 +91,7 @@ def main():
         logger.info("Rendering stage 1")  # Debug log
         if render_user_info_form(translations):  # If form returns True
             logger.info("Stage 1 complete, should move to stage 2")  # Debug log
-            st.experimental_rerun()  # Force Streamlit to rerun with new stage
+            st.rerun()  # Force Streamlit to rerun with new stage
     elif st.session_state.stage == 2:
         render_user_verification(translations)
     elif st.session_state.stage == 3:

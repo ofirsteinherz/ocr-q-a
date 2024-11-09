@@ -1,60 +1,13 @@
 import streamlit as st
 from datetime import datetime
-import re
 import os
-from pathlib import Path
-import sys
 import json
 import logging
-from typing import Dict, Set
+from pathlib import Path
+from typing import Dict
 
-# Add project root to path
-project_root = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(project_root))
-
-from qna_project.config.settings import settings
+from qna_project.config.settings import settings  # Added back for output directory
 from qna_project.clients.gpt_client import GPTClient, Message, MessageRole
-
-class UserDataModel:
-    """Data model for user information"""
-    def __init__(self):
-        self.data = {
-            'first_name': '',
-            'last_name': '',
-            'id_number': '',
-            'gender': '',
-            'age': '',
-            'hmo_number': '',
-            'hmo_name': '',
-            'insurance_plan': ''
-        }
-        self.completed_fields: Set[str] = set()
-
-    def update_field(self, field: str, value: str) -> None:
-        """Update a field and mark it as completed"""
-        if field == 'first_name':
-            names = value.split(' ', 1)
-            self.data['first_name'] = names[0]
-            if len(names) > 1:
-                self.data['last_name'] = names[1]
-                self.completed_fields.add('last_name')
-            self.completed_fields.add('first_name')
-        else:
-            self.data[field] = value
-            self.completed_fields.add(field)
-
-    def to_dict(self) -> Dict:
-        return {
-            'data': self.data,
-            'completed_fields': list(self.completed_fields)
-        }
-
-    @classmethod
-    def from_dict(cls, data: Dict) -> 'UserDataModel':
-        instance = cls()
-        instance.data = data.get('data', {})
-        instance.completed_fields = set(data.get('completed_fields', []))
-        return instance
 
 class UserInfoBot:
     def __init__(self, translations):
@@ -65,12 +18,6 @@ class UserInfoBot:
             api_key=os.getenv("AZURE_OPENAI_API_KEY"),
             endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
         )
-        
-        # Define the required fields and their order
-        self.required_fields = [
-            'first_name', 'last_name', 'id_number', 'gender', 
-            'age', 'hmo_number', 'hmo_name', 'insurance_plan'
-        ]
         
         self.prompt_template = """
         You are an assistant helping gather user information for a medical system.
@@ -85,30 +32,25 @@ class UserInfoBot:
         - HMO name (must be one of: Maccabi, Meuchedet, Clalit)
         - Insurance membership plan (must be one of: Gold, Silver, Bronze)
 
-        For each piece of information:
-        1. Ask for only one piece of information at a time
-        2. Validate the response based on the rules
+        Important instructions:
+        1. Ask for only ONE piece of information at a time
+        2. Validate each response based on the rules above
         3. If invalid, explain why and ask again
-        4. If valid, confirm and move to next piece of information
-        5. Keep track of what information has been collected
-        
-        Current collected information: 
-        {collected_info}
-        
-        Next required field: {next_required}
-        Missing fields: {missing_fields}
-        
+        4. If valid, move to the next piece of information
+        5. After collecting ALL information, respond with the data in this exact format:
+           '''json
+           {{"first_name": "...", "last_name": "...", "id_number": "...", "gender": "...", 
+             "age": "...", "hmo_number": "...", "hmo_name": "...", "insurance_plan": "..."}}
+           '''
+
         Additional language-specific instructions:
         - If language is 'he': Use Hebrew and maintain Right-to-Left (RTL) text direction
         - If language is 'en': Use English and maintain Left-to-Right (LTR) text direction
-
-        After you done getting all fields from the user, return a json wraped with '''json [add here] '''
         """
-        self.initialize_state()
 
     def setup_logging(self):
-        """Initialize logging configuration for the bot"""
-        log_dir = settings.LOGS_DIR / "site_logs"
+        """Initialize logging configuration"""
+        log_dir = settings.LOGS_DIR / "site_logs"  # Using settings
         log_dir.mkdir(parents=True, exist_ok=True)
         
         self.logger = logging.getLogger(f"UserInfoBot_{id(self)}")
@@ -117,14 +59,8 @@ class UserInfoBot:
         if not self.logger.handlers:
             log_file = log_dir / f"chat_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
             file_handler = logging.FileHandler(log_file)
-            file_handler.setLevel(logging.INFO)
-            
-            formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-            file_handler.setFormatter(formatter)
-            
+            file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
             self.logger.addHandler(file_handler)
-        
-        self.logger.info("Logging initialized")
 
     def save_conversation_to_file(self):
         """Save current conversation state to a JSON file"""
@@ -132,8 +68,6 @@ class UserInfoBot:
             chat_file = settings.OUTPUT_DIR / f"chat_history_{st.session_state.session_id}.json"
             conversation_data = {
                 'messages': st.session_state.messages,
-                'user_info': st.session_state.conversation_state['user_info'],
-                'completed_fields': list(st.session_state.conversation_state['completed_fields']),
                 'timestamp': datetime.now().isoformat(),
                 'session_id': st.session_state.session_id
             }
@@ -145,64 +79,36 @@ class UserInfoBot:
             self.logger.info(f"Conversation saved to {chat_file}")
 
     def initialize_state(self):
-        """Initialize or restore session state"""
-        if 'page_loaded' not in st.session_state:
-            st.session_state.page_loaded = True
-            st.session_state.session_id = str(datetime.now().strftime('%Y%m%d_%H%M%S'))
-            self.logger.info(f"New session started: {st.session_state.session_id}")
-            
+        """Initialize basic session state"""
         if 'messages' not in st.session_state:
             st.session_state.messages = []
+        
+        if 'language' not in st.session_state:
+            st.session_state.language = 'HE'
             
-        if 'conversation_state' not in st.session_state:
-            st.session_state.conversation_state = {
-                'user_info': {},
-                'current_field': self.required_fields[0],
-                'completed_fields': set()
-            }
-            
-        if 'previous_language' not in st.session_state:
-            st.session_state.previous_language = st.session_state.language
+        if 'session_id' not in st.session_state:
+            st.session_state.session_id = str(datetime.now().strftime('%Y%m%d_%H%M%S'))
 
-    def get_missing_fields(self):
-        """Return list of fields that haven't been completed yet"""
-        completed = set(st.session_state.conversation_state['completed_fields'])
-        return [field for field in self.required_fields if field not in completed]
+    def extract_json_from_response(self, response: str) -> Dict:
+        """Extract JSON data from response if present"""
+        if "'''json" in response:
+            try:
+                json_str = response.split("'''json")[1].split("'''")[0].strip()
+                return json.loads(json_str)
+            except:
+                return None
+        return None
 
     def get_gpt_response(self, user_input: str = None) -> str:
-        """Get response from GPT based on current conversation state"""
-        current_language = st.session_state.language.lower()
-        
-        if st.session_state.previous_language != st.session_state.language:
-            self.logger.info(f"Language changed to {current_language}, resetting conversation")
-            st.session_state.messages = []
-            st.session_state.conversation_state = {
-                'user_info': {},
-                'current_field': self.required_fields[0],
-                'completed_fields': set()
-            }
-            st.session_state.previous_language = st.session_state.language
-        
-        collected_info = "\n".join([
-            f"{k}: {st.session_state.conversation_state['user_info'][k]}"
-            for k in st.session_state.conversation_state['completed_fields']
-        ])
-        
-        next_required = st.session_state.conversation_state['current_field']
-        missing_fields = ", ".join(self.get_missing_fields())
-        
+        """Get response from GPT"""
         messages = [
             Message(
                 role=MessageRole.SYSTEM,
-                content=self.prompt_template.format(
-                    language=current_language,
-                    collected_info=collected_info or "None",
-                    next_required=next_required,
-                    missing_fields=missing_fields
-                )
+                content=self.prompt_template.format(language=st.session_state.language.lower())
             )
         ]
         
+        # Add conversation history
         for msg in st.session_state.messages:
             role = MessageRole.ASSISTANT if msg["role"] == "assistant" else MessageRole.USER
             messages.append(Message(role=role, content=msg["content"]))
@@ -211,79 +117,63 @@ class UserInfoBot:
             messages.append(Message(role=MessageRole.USER, content=user_input))
         
         try:
-            response = self.client.chat(messages)
-            self.logger.info(f"GPT response received for field {next_required}")
-            return response
+            return self.client.chat(messages)
         except Exception as e:
             self.logger.error(f"Error getting GPT response: {str(e)}")
             raise
 
-    def process_user_input(self, prompt: str) -> bool:
-        """Process and validate user input, update state accordingly"""
-        current_field = st.session_state.conversation_state['current_field']
-
-        st.session_state.conversation_state['user_info'][current_field] = prompt
-        st.session_state.conversation_state['completed_fields'].add(current_field)
-        self.logger.info(f"Field {current_field} validated and saved: {prompt}")
-        
-        missing_fields = self.get_missing_fields()
-        if not missing_fields:
-            self.logger.info("All fields completed, preparing for stage 2")
-            st.session_state.user_info = st.session_state.conversation_state['user_info'].copy()
-            self.save_conversation_to_file()
-            st.session_state.stage = 2  # Set stage to 2
-            return True  # Important: Return True when done
-        
-        st.session_state.conversation_state['current_field'] = missing_fields[0]
-        self.logger.info(f"Moving to next field: {missing_fields[0]}")
-        return False  # Important: Return False when not done
-
     def render_chat(self):
-        """Render the chat interface and handle user interactions"""
+        """Render the chat interface"""
         st.header(self.translations['stage1_title'])
-        
-        # Display completion progress
-        total_fields = len(self.required_fields)
-        completed_fields = len(st.session_state.conversation_state['completed_fields'])
-        progress = completed_fields / total_fields
-        st.progress(progress, text=f"Completed {completed_fields} of {total_fields} fields")
+        self.initialize_state()
 
-        # Display current user info
-        if st.session_state.conversation_state['completed_fields']:
-            st.write("Collected Information:")
-            for field in st.session_state.conversation_state['completed_fields']:
-                st.write(f"{field}: {st.session_state.conversation_state['user_info'][field]}")
+        # TEST COMMAND: Add a button to simulate JSON response
+        if st.button("Test: Simulate Complete Response"):
+            test_json = '''json
+            {"first_name": "John", "last_name": "Doe", "id_number": "123456789", 
+             "gender": "Male", "age": "30", "hmo_number": "987654321", 
+             "hmo_name": "Maccabi", "insurance_plan": "Gold"}
+            '''
+            with st.chat_message("assistant"):
+                st.markdown(test_json)
+            st.session_state.messages.append({"role": "assistant", "content": test_json})
+            self.save_conversation_to_file()
+            st.session_state.stage = 2
+            return True
 
         # Display chat messages
         for message in st.session_state.messages:
             with st.chat_message(message["role"]):
                 st.markdown(message["content"])
+                
+                # Check if we have a complete JSON response
+                if message["role"] == "assistant":
+                    json_data = self.extract_json_from_response(message["content"])
+                    if json_data:
+                        st.session_state.user_info = json_data  # Save the extracted data
+                        st.session_state.stage = 2
+                        return True
 
         # Handle user input
         if prompt := st.chat_input("Type your response..."):
-            self.logger.info(f"User input received for field {st.session_state.conversation_state['current_field']}")
-            
             with st.chat_message("user"):
                 st.markdown(prompt)
-            
             st.session_state.messages.append({"role": "user", "content": prompt})
             
             try:
-                all_done = self.process_user_input(prompt)
-                self.logger.info(f"process_user_input returned: {all_done}")  # Debug log
-                
-                if all_done:
-                    self.logger.info(f"All information collected, moving to stage 2. Current stage: {st.session_state.stage}")
-                    return True
-
                 response = self.get_gpt_response(prompt)
-                
                 with st.chat_message("assistant"):
                     st.markdown(response)
-                
                 st.session_state.messages.append({"role": "assistant", "content": response})
                 self.save_conversation_to_file()
                 
+                # Check if we have a complete JSON response
+                json_data = self.extract_json_from_response(response)
+                if json_data:
+                    st.session_state.user_info = json_data  # Save the extracted data
+                    st.session_state.stage = 2
+                    return True
+                    
             except Exception as e:
                 self.logger.error(f"Error processing chat: {str(e)}")
                 st.error("An error occurred. Please try again.")
@@ -304,8 +194,5 @@ class UserInfoBot:
 
 def render_user_info_form(translations):
     """Main entry point for the user info form"""
-    if 'language' not in st.session_state:
-        st.session_state.language = 'HE'
-    
     bot = UserInfoBot(translations)
     return bot.render_chat()
