@@ -91,12 +91,17 @@ class UserInfoBot:
 
     def extract_json_from_response(self, response: str) -> Dict:
         """Extract JSON data from response if present"""
-        if "'''json" in response:
-            try:
-                json_str = response.split("'''json")[1].split("'''")[0].strip()
-                return json.loads(json_str)
-            except:
-                return None
+        # Check for both triple quote and triple backtick formats
+        for delimiter in ["'''json", "```json"]:
+            if delimiter in response:
+                try:
+                    # Split by the delimiter and take the part after it
+                    json_str = response.split(delimiter)[1]
+                    # Remove the closing delimiter (both ''' and ``` cases)
+                    json_str = json_str.split("'''")[0].split("```")[0].strip()
+                    return json.loads(json_str)
+                except:
+                    continue
         return None
 
     def get_gpt_response(self, user_input: str = None) -> str:
@@ -126,20 +131,6 @@ class UserInfoBot:
         """Render the chat interface"""
         st.header(self.translations['stage1_title'])
         self.initialize_state()
-
-        # TEST COMMAND: Add a button to simulate JSON response
-        if st.button("Test: Simulate Complete Response"):
-            test_json = '''json
-            {"first_name": "John", "last_name": "Doe", "id_number": "123456789", 
-             "gender": "Male", "age": "30", "hmo_number": "987654321", 
-             "hmo_name": "Maccabi", "insurance_plan": "Gold"}
-            '''
-            with st.chat_message("assistant"):
-                st.markdown(test_json)
-            st.session_state.messages.append({"role": "assistant", "content": test_json})
-            self.save_conversation_to_file()
-            st.session_state.stage = 2
-            return True
 
         # Display chat messages
         for message in st.session_state.messages:
