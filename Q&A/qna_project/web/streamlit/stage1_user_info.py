@@ -6,7 +6,7 @@ import logging
 from pathlib import Path
 from typing import Dict
 
-from qna_project.config.settings import settings  # Added back for output directory
+from qna_project.config.settings import settings
 from qna_project.clients.gpt_client import GPTClient, Message, MessageRole
 
 class UserInfoBot:
@@ -19,7 +19,8 @@ class UserInfoBot:
             endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
         )
         
-        self.prompt_template = """
+        # Move prompt template to a method that can access current language
+        self.base_prompt_template = """
         You are an assistant helping gather user information for a medical system.
         Please respond in {language}.
         
@@ -38,15 +39,24 @@ class UserInfoBot:
         3. If invalid, explain why and ask again
         4. If valid, move to the next piece of information
         5. After collecting ALL information, respond with the data in this exact format:
-           '''json
+           ```json
            {{"first_name": "...", "last_name": "...", "id_number": "...", "gender": "...", 
              "age": "...", "hmo_number": "...", "hmo_name": "...", "insurance_plan": "..."}}
-           '''
+           ```
 
         Additional language-specific instructions:
         - If language is 'he': Use Hebrew and maintain Right-to-Left (RTL) text direction
         - If language is 'en': Use English and maintain Left-to-Right (LTR) text direction
         """
+
+    def get_current_language(self) -> str:
+        """Get the current language from session state, defaulting to HE"""
+        return st.session_state.language.lower() if 'language' in st.session_state else 'he'
+
+    def get_prompt_template(self) -> str:
+        """Get prompt template with current language"""
+        current_language = self.get_current_language()
+        return self.base_prompt_template.format(language=current_language)
 
     def setup_logging(self):
         """Initialize logging configuration"""
@@ -69,7 +79,8 @@ class UserInfoBot:
             conversation_data = {
                 'messages': st.session_state.messages,
                 'timestamp': datetime.now().isoformat(),
-                'session_id': st.session_state.session_id
+                'session_id': st.session_state.session_id,
+                'language': self.get_current_language()
             }
             
             chat_file.parent.mkdir(parents=True, exist_ok=True)
@@ -82,12 +93,20 @@ class UserInfoBot:
         """Initialize basic session state"""
         if 'messages' not in st.session_state:
             st.session_state.messages = []
-        
-        if 'language' not in st.session_state:
-            st.session_state.language = 'HE'
             
         if 'session_id' not in st.session_state:
             st.session_state.session_id = str(datetime.now().strftime('%Y%m%d_%H%M%S'))
+            
+        # Track language changes
+        if 'previous_language' not in st.session_state:
+            st.session_state.previous_language = self.get_current_language()
+        
+        # If language changed, reset conversation
+        current_language = self.get_current_language()
+        if current_language != st.session_state.previous_language:
+            self.logger.info(f"Language changed from {st.session_state.previous_language} to {current_language}, resetting conversation")
+            st.session_state.messages = []
+            st.session_state.previous_language = current_language
 
     def extract_json_from_response(self, response: str) -> Dict:
         """Extract JSON data from response if present"""
@@ -109,7 +128,7 @@ class UserInfoBot:
         messages = [
             Message(
                 role=MessageRole.SYSTEM,
-                content=self.prompt_template.format(language=st.session_state.language.lower())
+                content=self.get_prompt_template()  # Get current language template
             )
         ]
         
