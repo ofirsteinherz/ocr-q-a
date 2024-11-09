@@ -85,9 +85,13 @@ def main():
     
     st.title(translations['title'])
     st.write(f"Stage {st.session_state.stage} / 3")
+    logger.info(f"Current stage: {st.session_state.stage}")  # Debug log
     
     if st.session_state.stage == 1:
-        render_user_info_form(translations)
+        logger.info("Rendering stage 1")  # Debug log
+        if render_user_info_form(translations):  # If form returns True
+            logger.info("Stage 1 complete, should move to stage 2")  # Debug log
+            st.experimental_rerun()  # Force Streamlit to rerun with new stage
     elif st.session_state.stage == 2:
         render_user_verification(translations)
     elif st.session_state.stage == 3:
@@ -97,4 +101,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-    settings.clean_pycache()
+    # settings.clean_pycache()
