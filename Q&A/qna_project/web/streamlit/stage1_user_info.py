@@ -20,34 +20,7 @@ class UserInfoBot:
         )
         
         # Move prompt template to a method that can access current language
-        self.base_prompt_template = """
-        You are an assistant helping gather user information for a medical system.
-        Please respond in {language}.
-        
-        You need to collect the following information one at a time:
-        - First and last name
-        - ID number (must be 9 digits)
-        - Gender (Male/Female/Other)
-        - Age (between 0 and 120)
-        - HMO card number (must be 9 digits)
-        - HMO name (must be one of: Maccabi, Meuchedet, Clalit)
-        - Insurance membership plan (must be one of: Gold, Silver, Bronze)
-
-        Important instructions:
-        1. Ask for only ONE piece of information at a time
-        2. Validate each response based on the rules above
-        3. If invalid, explain why and ask again
-        4. If valid, move to the next piece of information
-        5. After collecting ALL information, respond with the data in this exact format:
-           ```json
-           {{"first_name": "...", "last_name": "...", "id_number": "...", "gender": "...", 
-             "age": "...", "hmo_number": "...", "hmo_name": "...", "insurance_plan": "..."}}
-           ```
-
-        Additional language-specific instructions:
-        - If language is 'he': Use Hebrew and maintain Right-to-Left (RTL) text direction
-        - If language is 'en': Use English and maintain Left-to-Right (LTR) text direction
-        """
+        self.base_prompt_template = settings.get_prompt('data_gather')
 
     def get_current_language(self) -> str:
         """Get the current language from session state, defaulting to HE"""
