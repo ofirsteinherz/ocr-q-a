@@ -1,0 +1,323 @@
+{
+  "general_info": {
+    "title": "מרפאות שיניים",
+    "description": "מרפאות שיניים מציעות מגוון רחב של שירותי בריאות הפה, כולל בדיקות שגרתיות, ניקויים, סתימות, טיפולי שורש, עקירות, והליכים קוסמטיים. מרפאות אלו מאוישות על ידי רופאי שיניים מורשים ושינניות המשתמשים בציוד מודרני כדי להבטיח טיפול איכותי לפציינטים מכל הגילאים."
+  },
+  "services": [
+    {
+      "name": "בדיקות וניקוי שיניים",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "תור תוך 48 שעות"
+          },
+          "silver": {
+            "discount": "חינם",
+            "conditions": "תור תוך שבוע"
+          },
+          "bronze": {
+            "discount": "30%",
+            "conditions": "תור רגיל"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "תור ביום"
+          },
+          "silver": {
+            "discount": "חינם",
+            "conditions": "תור תוך 5 ימים"
+          },
+          "bronze": {
+            "discount": "25%",
+            "conditions": "תור תוך שבועיים"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "קו חירום 24/7"
+          },
+          "silver": {
+            "discount": "חינם",
+            "conditions": "שעות קליניקה מורחבות"
+          },
+          "bronze": {
+            "discount": "20%",
+            "conditions": "שעות קליניקה רגילות"
+          }
+        }
+      }
+    },
+    {
+      "name": "סתימות",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "80%",
+            "conditions": "חומרים מתקדמים"
+          },
+          "silver": {
+            "discount": "50%",
+            "conditions": "50% הנחה"
+          },
+          "bronze": {
+            "discount": "20%",
+            "conditions": "20% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "75%",
+            "conditions": "חומרים פרימיום"
+          },
+          "silver": {
+            "discount": "45%",
+            "conditions": "45% הנחה"
+          },
+          "bronze": {
+            "discount": "15%",
+            "conditions": "15% הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "70%",
+            "conditions": "טכנולוגיה מתקדמת"
+          },
+          "silver": {
+            "discount": "40%",
+            "conditions": "40% הנחה"
+          },
+          "bronze": {
+            "discount": "20%",
+            "conditions": "20% הנחה"
+          }
+        }
+      }
+    },
+    {
+      "name": "טיפולי שורש",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "70%",
+            "conditions": "כולל צילומי רנטגן"
+          },
+          "silver": {
+            "discount": "40%",
+            "conditions": "40% הנחה"
+          },
+          "bronze": {
+            "discount": "15%",
+            "conditions": "15% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "65%",
+            "conditions": "טיפול ביום אחד"
+          },
+          "silver": {
+            "discount": "35%",
+            "conditions": "35% הנחה"
+          },
+          "bronze": {
+            "discount": "10%",
+            "conditions": "10% הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "60%",
+            "conditions": "כולל טיפול לאחר מכן"
+          },
+          "silver": {
+            "discount": "30%",
+            "conditions": "30% הנחה"
+          },
+          "bronze": {
+            "discount": "20%",
+            "conditions": "20% הנחה"
+          }
+        }
+      }
+    },
+    {
+      "name": "כתרים ושתלים",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "60%",
+            "conditions": "אחריות ל-5 שנים"
+          },
+          "silver": {
+            "discount": "35%",
+            "conditions": "אחריות ל-3 שנים"
+          },
+          "bronze": {
+            "discount": "10%",
+            "conditions": "אחריות לשנה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "55%",
+            "conditions": "אחריות ל-7 שנים"
+          },
+          "silver": {
+            "discount": "30%",
+            "conditions": "אחריות ל-4 שנים"
+          },
+          "bronze": {
+            "discount": "5%",
+            "conditions": "אחריות לשנתיים"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "50%",
+            "conditions": "אחריות ל-6 שנים"
+          },
+          "silver": {
+            "discount": "25%",
+            "conditions": "אחריות ל-3 שנים"
+          },
+          "bronze": {
+            "discount": "20%",
+            "conditions": "אחריות לשנה"
+          }
+        }
+      }
+    },
+    {
+      "name": "יישור שיניים",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "50%",
+            "conditions": "כולל רטנציה"
+          },
+          "silver": {
+            "discount": "30%",
+            "conditions": "30% הנחה"
+          },
+          "bronze": {
+            "discount": "5%",
+            "conditions": "5% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "45%",
+            "conditions": "כולל מכשיר שקוף"
+          },
+          "silver": {
+            "discount": "25%",
+            "conditions": "25% הנחה"
+          },
+          "bronze": {
+            "discount": "0%",
+            "conditions": "ללא הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "40%",
+            "conditions": "כולל ייעוץ אורתודונטי"
+          },
+          "silver": {
+            "discount": "20%",
+            "conditions": "20% הנחה"
+          },
+          "bronze": {
+            "discount": "20%",
+            "conditions": "20% הנחה"
+          }
+        }
+      }
+    },
+    {
+      "name": "טיפולים קוסמטיים",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "40%",
+            "conditions": "כולל הלבנה"
+          },
+          "silver": {
+            "discount": "25%",
+            "conditions": "25% הנחה"
+          },
+          "bronze": {
+            "discount": "0%",
+            "conditions": "ללא הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "35%",
+            "conditions": "כולל ציפויים"
+          },
+          "silver": {
+            "discount": "20%",
+            "conditions": "20% הנחה"
+          },
+          "bronze": {
+            "discount": "0%",
+            "conditions": "ללא הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "30%",
+            "conditions": "כולל שיחזור חרסינה"
+          },
+          "silver": {
+            "discount": "15%",
+            "conditions": "15% הנחה"
+          },
+          "bronze": {
+            "discount": "20%",
+            "conditions": "20% הנחה"
+          }
+        }
+      }
+    }
+  ],
+  "contact_info": {
+    "phone_numbers": {
+      "maccabi": {
+        "short": "1-700-50-53-53",
+        "long": "",
+        "extension": "1"
+      },
+      "meuhedet": {
+        "short": "1-222-3833",
+        "long": "",
+        "extension": "2"
+      },
+      "clalit": {
+        "short": "03-9766111",
+        "long": "",
+        "extension": "3"
+      }
+    },
+    "additional_info": {
+      "maccabi": {
+        "phone": "1-700-50-53-53",
+        "website": "https://www.maccabi4u.co.il/dental-services"
+      },
+      "meuhedet": {
+        "phone": "1-222-3833",
+        "website": "https://www.meuhedet.co.il/dental-care"
+      },
+      "clalit": {
+        "phone": "03-9766111",
+        "website": "https://www.clalit.co.il/he/dental"
+      }
+    }
+  }
+}

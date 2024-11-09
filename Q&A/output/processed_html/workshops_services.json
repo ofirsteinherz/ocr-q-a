@@ -1,0 +1,323 @@
+{
+  "general_info": {
+    "title": "סדנאות בריאות",
+    "description": "סדנאות בריאות הן חלק חשוב מתוכניות קידום הבריאות של קופות החולים. הן מציעות מגוון רחב של פעילויות חינוכיות ומעשיות המיועדות לשפר את בריאות המבוטחים, להקנות ידע ומיומנויות לאורח חיים בריא, ולסייע בהתמודדות עם מצבי בריאות שונים."
+  },
+  "services": [
+    {
+      "name": "הפסקת עישון",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל טיפול תרופתי"
+          },
+          "silver": {
+            "discount": "50%",
+            "conditions": "25% הנחה על טיפול תרופתי"
+          },
+          "bronze": {
+            "discount": "25%",
+            "conditions": "25% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל מעקב אישי לשנה"
+          },
+          "silver": {
+            "discount": "60%",
+            "conditions": "60% הנחה"
+          },
+          "bronze": {
+            "discount": "30%",
+            "conditions": "30% הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל תמיכה קבוצתית מתמשכת"
+          },
+          "silver": {
+            "discount": "70%",
+            "conditions": "70% הנחה"
+          },
+          "bronze": {
+            "discount": "40%",
+            "conditions": "40% הנחה"
+          }
+        }
+      }
+    },
+    {
+      "name": "תזונה נכונה",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל 3 פגישות אישיות עם דיאטנית"
+          },
+          "silver": {
+            "discount": "70%",
+            "conditions": "פגישה אחת עם דיאטנית"
+          },
+          "bronze": {
+            "discount": "40%",
+            "conditions": "40% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל תוכנית תזונה אישית"
+          },
+          "silver": {
+            "discount": "65%",
+            "conditions": "65% הנחה"
+          },
+          "bronze": {
+            "discount": "35%",
+            "conditions": "35% הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל ליווי דיגיטלי לחצי שנה"
+          },
+          "silver": {
+            "discount": "75%",
+            "conditions": "75% הנחה"
+          },
+          "bronze": {
+            "discount": "45%",
+            "conditions": "45% הנחה"
+          }
+        }
+      }
+    },
+    {
+      "name": "פעילות גופנית",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל מנוי לחודש למכון כושר"
+          },
+          "silver": {
+            "discount": "60%",
+            "conditions": "60% הנחה"
+          },
+          "bronze": {
+            "discount": "30%",
+            "conditions": "30% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל 5 אימונים אישיים"
+          },
+          "silver": {
+            "discount": "55%",
+            "conditions": "2 אימונים אישיים"
+          },
+          "bronze": {
+            "discount": "25%",
+            "conditions": "25% הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל ערכת אימון ביתית"
+          },
+          "silver": {
+            "discount": "65%",
+            "conditions": "65% הנחה"
+          },
+          "bronze": {
+            "discount": "35%",
+            "conditions": "35% הנחה"
+          }
+        }
+      }
+    },
+    {
+      "name": "ניהול מתח",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל 10 מפגשי מדיטציה"
+          },
+          "silver": {
+            "discount": "65%",
+            "conditions": "5 מפגשי מדיטציה"
+          },
+          "bronze": {
+            "discount": "35%",
+            "conditions": "35% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל סדנת יוגה שבועית לחודשיים"
+          },
+          "silver": {
+            "discount": "70%",
+            "conditions": "70% הנחה"
+          },
+          "bronze": {
+            "discount": "40%",
+            "conditions": "40% הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל אפליקציית מיינדפולנס לשנה"
+          },
+          "silver": {
+            "discount": "60%",
+            "conditions": "60% הנחה"
+          },
+          "bronze": {
+            "discount": "30%",
+            "conditions": "30% הנחה"
+          }
+        }
+      }
+    },
+    {
+      "name": "סוכרת",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל מד סוכר רציף לחודש"
+          },
+          "silver": {
+            "discount": "75%",
+            "conditions": "75% הנחה"
+          },
+          "bronze": {
+            "discount": "50%",
+            "conditions": "50% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל ליווי אישי של אחות סוכרת"
+          },
+          "silver": {
+            "discount": "70%",
+            "conditions": "70% הנחה"
+          },
+          "bronze": {
+            "discount": "45%",
+            "conditions": "45% הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל קורס בישול לסוכרתיים"
+          },
+          "silver": {
+            "discount": "80%",
+            "conditions": "80% הנחה"
+          },
+          "bronze": {
+            "discount": "55%",
+            "conditions": "55% הנחה"
+          }
+        }
+      }
+    },
+    {
+      "name": "הריון ולידה",
+      "providers": {
+        "maccabi": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל קורס החייאת תינוקות"
+          },
+          "silver": {
+            "discount": "70%",
+            "conditions": "70% הנחה"
+          },
+          "bronze": {
+            "discount": "40%",
+            "conditions": "40% הנחה"
+          }
+        },
+        "meuhedet": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל 3 מפגשי ייעוץ הנקה"
+          },
+          "silver": {
+            "discount": "65%",
+            "conditions": "מפגש ייעוץ הנקה אחד"
+          },
+          "bronze": {
+            "discount": "35%",
+            "conditions": "35% הנחה"
+          }
+        },
+        "clalit": {
+          "gold": {
+            "discount": "חינם",
+            "conditions": "כולל סדנת עיסוי תינוקות"
+          },
+          "silver": {
+            "discount": "75%",
+            "conditions": "75% הנחה"
+          },
+          "bronze": {
+            "discount": "45%",
+            "conditions": "45% הנחה"
+          }
+        }
+      }
+    }
+  ],
+  "contact_info": {
+    "phone_numbers": {
+      "maccabi": {
+        "short": "1-700-50-53-53",
+        "long": "",
+        "extension": "7"
+      },
+      "meuhedet": {
+        "short": "1-222-3833",
+        "long": "",
+        "extension": "8"
+      },
+      "clalit": {
+        "short": "03-9766111",
+        "long": "",
+        "extension": "9"
+      }
+    },
+    "additional_info": {
+      "maccabi": {
+        "phone": "1-700-50-53-53",
+        "website": "https://www.maccabi4u.co.il/health-workshops"
+      },
+      "meuhedet": {
+        "phone": "1-222-3833",
+        "website": "https://www.meuhedet.co.il/health-workshops"
+      },
+      "clalit": {
+        "phone": "03-9766111",
+        "website": "https://www.clalit.co.il/he/lifestyle/health-workshops"
+      }
+    }
+  }
+}
