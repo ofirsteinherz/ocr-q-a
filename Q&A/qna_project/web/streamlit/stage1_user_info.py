@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import sys
 import json
+import logging
 
 # Add project root to path
 project_root = Path(__file__).resolve().parents[3]
@@ -42,12 +43,34 @@ class UserInfoBot:
         Next required information: {next_required}
         """
         self.initialize_state()
+        self.setup_logging()
+        
+    def setup_logging(self):
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.INFO)
+        
+        # Create logs directory if it doesn't exist
+        log_dir = settings.OUTPUT_DIR / "logs"
+        log_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Create a file handler
+        log_file = log_dir / f"chat_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setLevel(logging.INFO)
+        
+        # Create a formatter
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(formatter)
+        
+        # Add the handler to the logger
+        self.logger.addHandler(file_handler)
         
     def initialize_state(self):
         # Clear session state on page load/refresh
         if 'page_loaded' not in st.session_state:
             st.session_state.clear()
             st.session_state.page_loaded = True
+            self.logger.info("New session started")
             
         if 'messages' not in st.session_state:
             st.session_state.messages = []
@@ -57,6 +80,20 @@ class UserInfoBot:
                 'user_info': {},
                 'current_field': 'first_name'
             }
+
+    def save_conversation_to_file(self):
+        if 'session_id' in st.session_state:
+            # Save chat history
+            chat_file = settings.OUTPUT_DIR / f"chat_history_{st.session_state.session_id}.json"
+            with open(chat_file, 'w', encoding='utf-8') as f:
+                json.dump({
+                    'messages': st.session_state.messages,
+                    'user_info': st.session_state.conversation_state['user_info'],
+                    'timestamp': datetime.now().isoformat(),
+                    'session_id': st.session_state.session_id
+                }, f, ensure_ascii=False, indent=2)
+            
+            self.logger.info(f"Conversation saved to {chat_file}")
 
     def validate_response(self, field: str, value: str) -> tuple[bool, str]:
         validations = {
@@ -71,6 +108,8 @@ class UserInfoBot:
         if field in validations:
             is_valid = validations[field](value)
             message = "" if is_valid else f"Invalid {field}. Please try again."
+            if not is_valid:
+                self.logger.warning(f"Invalid {field} value provided: {value}")
             return is_valid, message
         return True, ""
 
@@ -95,8 +134,14 @@ class UserInfoBot:
             
         if user_input:
             messages.append(Message(role=MessageRole.USER, content=user_input))
-            
-        return self.client.chat(messages)
+        
+        try:
+            response = self.client.chat(messages)
+            self.logger.info(f"GPT response received for input: {user_input}")
+            return response
+        except Exception as e:
+            self.logger.error(f"Error getting GPT response: {str(e)}")
+            raise
 
     def process_user_input(self, user_input: str):
         current_field = st.session_state.conversation_state['current_field']
@@ -104,6 +149,7 @@ class UserInfoBot:
         
         if is_valid:
             st.session_state.conversation_state['user_info'][current_field] = user_input
+            self.logger.info(f"Field {current_field} updated with value: {user_input}")
             
             # Define the order of fields
             field_order = [
@@ -115,8 +161,10 @@ class UserInfoBot:
             current_index = field_order.index(current_field)
             if current_index < len(field_order) - 1:
                 st.session_state.conversation_state['current_field'] = field_order[current_index + 1]
+                self.logger.info(f"Moving to next field: {field_order[current_index + 1]}")
             else:
                 # All fields collected
+                self.logger.info("All user information collected successfully")
                 return True
                 
         return False
@@ -131,6 +179,8 @@ class UserInfoBot:
 
         # Accept user input
         if prompt := st.chat_input("Type your response..."):
+            self.logger.info(f"User input received: {prompt}")
+            
             # Display user message in chat
             with st.chat_message("user"):
                 st.markdown(prompt)
@@ -139,34 +189,43 @@ class UserInfoBot:
             st.session_state.messages.append({"role": "user", "content": prompt})
             
             # Process user input
-            all_done = self.process_user_input(prompt)
-            if all_done:
-                st.session_state.user_info = st.session_state.conversation_state['user_info']
-                st.session_state.stage = 2
-                return True
+            try:
+                all_done = self.process_user_input(prompt)
+                if all_done:
+                    self.logger.info("Processing complete, moving to next stage")
+                    st.session_state.user_info = st.session_state.conversation_state['user_info']
+                    st.session_state.stage = 2
+                    return True
 
-            # Get GPT response
-            response = self.get_gpt_response(prompt)
-            
-            # Display assistant response
-            with st.chat_message("assistant"):
-                st.markdown(response)
-            
-            # Add assistant response to history
-            st.session_state.messages.append({"role": "assistant", "content": response})
+                # Get GPT response
+                response = self.get_gpt_response(prompt)
+                
+                # Display assistant response
+                with st.chat_message("assistant"):
+                    st.markdown(response)
+                
+                # Add assistant response to history
+                st.session_state.messages.append({"role": "assistant", "content": response})
 
-            # Save conversation if needed
-            if 'session_id' in st.session_state:
-                conversation_file = settings.OUTPUT_DIR / f"conversation_{st.session_state.session_id}.json"
-                with open(conversation_file, 'w', encoding='utf-8') as f:
-                    json.dump(st.session_state.messages, f, ensure_ascii=False, indent=2)
+                # Save conversation
+                self.save_conversation_to_file()
+                
+            except Exception as e:
+                self.logger.error(f"Error during chat processing: {str(e)}")
+                st.error("An error occurred while processing your message. Please try again.")
         
         # Start conversation if no messages
         if not st.session_state.messages:
-            initial_response = self.get_gpt_response()
-            with st.chat_message("assistant"):
-                st.markdown(initial_response)
-            st.session_state.messages.append({"role": "assistant", "content": initial_response})
+            self.logger.info("Starting new conversation")
+            try:
+                initial_response = self.get_gpt_response()
+                with st.chat_message("assistant"):
+                    st.markdown(initial_response)
+                st.session_state.messages.append({"role": "assistant", "content": initial_response})
+                self.save_conversation_to_file()
+            except Exception as e:
+                self.logger.error(f"Error starting conversation: {str(e)}")
+                st.error("An error occurred while starting the conversation. Please refresh the page.")
             
         return False
 
