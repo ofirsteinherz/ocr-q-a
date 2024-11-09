@@ -71,7 +71,7 @@ After a lot of debugging, I found out that [Azure AI Document Intelligence](http
 
 For each section of the PDF, we send it into the Microsoft Document Intelligence, and then to make the result better we send it to GPT-4o. From the example I provided, you can see that GPT made the OCR process much better (the texts is taken from different PDF). You can see the full pipeline in [extract_form_fields.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/ocr_project/core/extract_form_fields.py) file.
 
-![ocr_section_pipeline](/Users/ofir/Documents/Development/kpmg/images/ocr_section_pipeline.png)
+![ocr_section_pipeline](images/ocr_section_pipeline.png)
 
 #### Stage 3: OCR Results
 
