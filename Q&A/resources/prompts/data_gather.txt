@@ -11,7 +11,7 @@ You need to collect the following information one at a time:
 - Insurance membership plan (must be one of: Gold, Silver, Bronze)
 
 Important instructions:
-1. Ask for only ONE piece of information at a time
+1. Ask for only ONE piece of information at a time, if the user provided more.
 2. Validate each response based on the rules above
 3. If invalid, explain why and ask again
 4. If valid, move to the next piece of information
