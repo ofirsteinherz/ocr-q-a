@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 from typing import List, Tuple
 
 class Settings:
@@ -32,10 +33,45 @@ class Settings:
             self.PROCESSED_HTML_DIR,
             self.TEMP_DIR
         ]
+
+        # Load environment variables
+        load_dotenv(dotenv_path=self.PROJECT_ROOT / ".env", verbose=True)
+
+        # Required environment variables
+        self.REQUIRED_ENV_VARS = [
+            "AZURE_OPENAI_API_KEY",
+            "AZURE_OPENAI_ENDPOINT"
+        ]
+        
         
         # Create all directories
         for directory in [self.RESOURCES_DIR] + self.GENERATED_DIRS:
             directory.mkdir(parents=True, exist_ok=True)
+
+    
+    def validate_environment(self, logger: logging.Logger = None) -> Tuple[bool, List[str]]:
+        """
+        Validate all required environment variables are set.
+        
+        Args:
+            logger: Optional logger instance for logging messages
+            
+        Returns:
+            Tuple of (is_valid: bool, missing_vars: List[str])
+        """
+        # Check for missing variables
+        missing_vars = [var for var in self.REQUIRED_ENV_VARS if not os.getenv(var)]
+        
+        if missing_vars:
+            message = "Missing required environment variables:"
+            if logger:
+                logger.error(message)
+                for var in missing_vars:
+                    logger.error(f"- {var}")
+                logger.error("\nPlease create a .env file in the project root with these variables.")
+            return False, missing_vars
+        
+        return True, []
 
     def clean_pycache(self):
         """Remove all __pycache__ directories in the project"""

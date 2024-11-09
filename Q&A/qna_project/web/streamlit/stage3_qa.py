@@ -4,6 +4,7 @@ import json
 from datetime import datetime
 import sys
 from pathlib import Path
+import logging
 
 # Add project root to path
 project_root = Path(__file__).resolve().parents[3]
@@ -18,9 +19,6 @@ class QASession:
             api_key=os.getenv("AZURE_OPENAI_API_KEY"),
             endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
         )
-
-        print("API Endpoint:", os.getenv("AZURE_OPENAI_ENDPOINT"))
-
         self.prompt_template = settings.get_prompt('data_gather')
     
     def save_conversation(self, message: str, role: str):
