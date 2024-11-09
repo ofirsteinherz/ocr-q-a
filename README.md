@@ -69,7 +69,9 @@ After a lot of debugging, I found out that [Azure AI Document Intelligence](http
 
 #### Stage 2: Analyze Each Section
 
-For each section of the PDF, we send it into the Microsoft Document Intelligence, and then to make the result better we send it to GPT-4o. From the example I provided, you can see that GPT made the OCR process much better (the texts is taken from different PDF). You can see the full pipeline in [extract_form_fields.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/ocr_project/core/extract_form_fields.py) file.
+For each section of the PDF, we send it into the Microsoft Document Intelligence, and then to make the result better we send it to GPT-4o. From the example I provided, you can see that GPT made the OCR process much better (the texts is taken from different PDF). For further work, I thought about running each section at the same time, which will make the running time 6x faster.
+
+You can see the full pipeline in [extract_form_fields.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/ocr_project/core/extract_form_fields.py) file.
 
 ![ocr_section_pipeline](images/ocr_section_pipeline.png)
 
@@ -217,11 +219,33 @@ form_4.pdf:
 
 
 
-2. Run Web Interface
+### Web Interface
 
+I was asked also to create a UI that enables users to load PDFs and extract the information with the OCR pipeline we just talked about.
 
+#### Stage 1: Upload PDF File
 
+I created simple HTML CSS JS site, which is inside the [web folder](https://github.com/ofirsteinherz/ocr-q-a/tree/main/ocr_project/ocr_project/web). The first step to ask the user to upload a PDF file.
 
+![ocr_site_load](images/ocr_site_load.png)
+
+#### Stage 2: Running OCR Pipeline
+
+For each stage in the OCR, the user can see what we are doing right now.
+
+![ocr_site_run_pipeline](images/ocr_site_run_pipeline.png)
+
+#### Stage 3: Display Results
+
+Our last step is to show the result in a good looking site.
+
+![ocr_site_results](images/ocr_site_results.png)
+
+To run the site, use the CLI command:
+
+```bash
+python3 -m ocr_project.web.app
+```
 
 
 
