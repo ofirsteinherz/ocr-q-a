@@ -5,6 +5,7 @@ import logging
 from pathlib import Path
 from dotenv import load_dotenv
 
+# Load environment variables
 project_root = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(project_root))
 load_dotenv(dotenv_path=project_root / ".env", verbose=True)
@@ -13,11 +14,6 @@ from qna_project.config.settings import settings
 from qna_project.web.streamlit.stage1_user_info import render_user_info_form
 from qna_project.web.streamlit.stage2_verification import render_user_verification
 from qna_project.web.streamlit.stage3_qa import QASession
-
-# Load environment variables
-project_root = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(project_root))
-load_dotenv(dotenv_path=project_root / ".env", verbose=True)
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -100,3 +96,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+    settings.clean_pycache()

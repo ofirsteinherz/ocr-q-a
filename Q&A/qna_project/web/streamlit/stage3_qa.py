@@ -20,6 +20,7 @@ class QASession:
             endpoint=os.getenv("AZURE_OPENAI_ENDPOINT")
         )
         self.prompt_template = settings.get_prompt('data_gather')
+        print(self.prompt_template)
     
     def save_conversation(self, message: str, role: str):
         timestamp = datetime.now().isoformat()
