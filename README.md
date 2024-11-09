@@ -42,13 +42,15 @@ Created [fake_csv.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_pro
 - Creates random addresses
 - Handles checkbox selections
 
+The PDFs themselfs are created with [form_processor.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/ocr_project/core/form_processor.py) file.
+
 #### Stage 3: PDFs Creation 
 
-Given the coordinates and the fake CSV, I created 100 PDFs that would be used as a supervised evaluation of the OCR pipeline.
+Given the coordinates and the fake CSV, I created with [gen_files.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/ocr_project/services/gen_files.py) 100 PDFs that would be used as a supervised evaluation of the OCR pipeline.
 
 ![synthetic_filles_pipeline](images/synthetic_filles_pipeline.png)
 
-To execute the CLI command, use:
+To generate synthetic PDFs, use the CLI command:
 
 ```bash
 python -m ocr_project.services.gen_files
@@ -59,21 +61,163 @@ python -m ocr_project.services.gen_files
 
 ### OCR Processing
 
+#### Stage 1: Split Into Sections
 
+After a lot of debugging, I found out that [Azure AI Document Intelligence](https://azure.microsoft.com/en-us/products/ai-services/ai-document-intelligence/) has a hard time handling full documents well without fine-tuning the model. I decided to handle each section of the PDF individually. [split_pdf.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/ocr_project/processors/split_pdf.py#L73) file was used for tests, in the OCR process the file [extract_form_fields.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/ocr_project/core/extract_form_fields.py) uses [sections.json](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/resources/sections.json) schema.
 
+![pdf_sections](images/pdf_sections.png)
 
+#### Stage 2: Analyze Each Section
 
+For each section of the PDF, we send it into the Microsoft Document Intelligence, and then to make the result better we send it to GPT-4o. From the example I provided, you can see that GPT made the OCR process much better (the texts is taken from different PDF). You can see the full pipeline in [extract_form_fields.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/ocr_project/ocr_project/core/extract_form_fields.py) file.
 
+![ocr_section_pipeline](/Users/ofir/Documents/Development/kpmg/images/ocr_section_pipeline.png)
 
+#### Stage 3: OCR Results
 
+For each OCR, I added some more manipulation and this is the final JSON result:
 
+```json
+{
+  "header": {
+    "title": "Form Header",
+    "fields": [
+      {
+        "label": "אל קופ״ח/בי״ח",
+        "value": "אור הנר"
+      },
+      {
+        "label": "תאריך מילוי הטופס",
+        "value": "12/01/2023"
+      },
+      {
+        "label": "תאריך קבלת הטופס בקופה",
+        "value": "06/05/2023"
+      }
+    ]
+  },
+  "section1": {
+    "title": "תאריך הפגיעה",
+    "fields": [
+      {
+        "label": "תאריך הפגיעה",
+        "value": "20/03/2023"
+      }
+    ]
+  },
+  ...
+}
+```
 
+To run the OCR, use the CLI command:
 
+```bash
 python3 -m ocr_project.services.run_ocr
+```
 
-3. Evaluate Results
 
-4. Run Web Interface
+
+### Evaluate Results
+
+#### Stage 1: Comparing Each Field
+
+To evaluate the OCR results I looked for a match in the master csv we creaetd before to the extracted texts:
+
+| **filename** | **section** | **field**                    | **expected_value**           | **extracted_value** | **normalized_expected** | **normalized_extracted** | **matches** |
+| ------------ | ----------- | ---------------------------- | ---------------------------- | ------------------- | ----------------------- | ------------------------ | ----------- |
+| form_1.pdf   | header      | אל קופ״ח/בי״ח                | אור הנר                      |                     | אורהנר                  |                          | FALSE       |
+| form_1.pdf   | header      | תאריך מילוי הטופס            | 1 2 0 1 2 0 2 3              | 12/01/2023          | 12012023                | 12012023                 | TRUE        |
+| form_1.pdf   | header      | תאריך קבלת הטופס בקופה       | 0 6 0 5 2 0 2 3              | 06/05/2023          | 06052023                | 06052023                 | TRUE        |
+| form_1.pdf   | section1    | תאריך הפגיעה                 | 1 9 1 2 2 0 2 3              | 20/02/1913          | 19122023                | 20021913                 | FALSE       |
+| form_1.pdf   | section2    | שם משפחה                     | עואד                         | עואד                | עואד                    | עואד                     | TRUE        |
+| form_1.pdf   | section2    | שם פרטי                      | אורין                        | אורין               | אורין                   | אורין                    | TRUE        |
+| form_1.pdf   | section2    | ת.ז                          | 2 4 0 4 6 8 3 7 1 2          | 240468371           | 2404683712              | 240468371                | FALSE       |
+| form_1.pdf   | section2    | תאריך לידה                   | 1 9 0 7 2 0 2 3              | 19/07/2023          | 19072023                | 19072023                 | TRUE        |
+| form_1.pdf   | section2    | רחוב                         | עומר                         | עומר                | עומר                    | עומר                     | TRUE        |
+| form_1.pdf   | section2    | מס' בית                      | 11                           | 11                  | 11                      | 11                       | TRUE        |
+| form_1.pdf   | section2    | כניסה                        | 3                            | 3                   | 3                       | 3                        | TRUE        |
+| form_1.pdf   | section2    | דירה                         | 2                            | 2                   | 2                       | 2                        | TRUE        |
+| form_1.pdf   | section2    | יישוב                        | עדי                          | עדי                 | עדי                     | עדי                      | TRUE        |
+| form_1.pdf   | section2    | מיקוד                        | 451696                       | 451696              | 451696                  | 451696                   | TRUE        |
+| form_1.pdf   | section2    | טלפון קווי                   | 0 5 4 6 4 9 5 7 0 9          | 046495709           | 0546495709              | 046495709                | FALSE       |
+| form_1.pdf   | section2    | טלפון נייד                   | 0 5 4 2 3 9 9 4 4 5          | 0542399445          | 0542399445              | 0542399445               | TRUE        |
+| form_1.pdf   | section3    | בתאריך                       | 31.12.2023                   | 31/12/2023          | 31122023                | 31122023                 | TRUE        |
+| form_1.pdf   | section3    | בשעה                         | 16:06                        | 16:06               | 16:06                   | 16:06                    | TRUE        |
+| form_1.pdf   | section3    | כאשר עבדתי ב                 | מכירות                       | מכירות              | מכירות                  | מכירות                   | TRUE        |
+| form_1.pdf   | section3    | נסיבות הפגיעה / תיאור התאונה | מעידה על משטח חלק בעת תפקיד. |                     | מעידהעלמשטחחלקבעתתפקיד. |                          | FALSE       |
+| form_1.pdf   | section3    | האיבר שנפגע                  | רגל ימין                     | רגל ימין            | רגלימין                 | רגלימין                  | TRUE        |
+
+As you can see, we can add more manipulation to the extracted and the original data, and we will manage to get better results.
+
+#### Stage 2: Statictics
+
+For each section,I showed the sucess presentage. the data sicentist and the client can see and make changes to the OCR pipelines and the PDF format so the confidence would be better.
+
+```
+=== Comparison Report ===
+Total files processed: 4
+Total fields processed: 152
+Fields matched: 117
+Overall match rate: 76.97%
+
+Section Statistics:
+
+header:
+  Total fields: 12
+  Matched fields: 5
+  Match rate: 41.67%
+
+section1:
+  Total fields: 4
+  Matched fields: 2
+  Match rate: 50.00%
+
+section2:
+  Total fields: 56
+  Matched fields: 46
+  Match rate: 82.14%
+
+section3:
+  Total fields: 40
+  Matched fields: 30
+  Match rate: 75.00%
+
+section4:
+  Total fields: 8
+  Matched fields: 8
+  Match rate: 100.00%
+
+section5:
+  Total fields: 32
+  Matched fields: 26
+  Match rate: 81.25%
+
+File Statistics:
+
+form_1.pdf:
+  Total fields: 38
+  Matched fields: 32
+  Match rate: 84.21%
+
+form_2.pdf:
+  Total fields: 38
+  Matched fields: 28
+  Match rate: 73.68%
+
+form_3.pdf:
+  Total fields: 38
+  Matched fields: 28
+  Match rate: 73.68%
+
+form_4.pdf:
+  Total fields: 38
+  Matched fields: 29
+  Match rate: 76.32%
+```
+
+
+
+2. Run Web Interface
 
 
 
