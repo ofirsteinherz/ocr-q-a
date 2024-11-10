@@ -21,6 +21,27 @@ This project consists of two main components:
 
 ## OCR Projects Overview
 
+- Form Processing: Extracts information from healthcare forms using Azure Form Recognizer
+- Field Validation: Validates extracted data against expected formats
+- Web Interface: Flask-based interface for uploading and processing forms
+- Evaluation: Compares extracted data with expected values
+
+```
+ocr_project/
+├── core/
+│   ├── document_analyzer.py    # Azure Form Recognizer integration 
+│   ├── extract_form_fields.py  # Field extraction logic
+│   ├── form_processor.py       # Form processing utilities
+│   └── gpt_client.py           # GPT integration
+├── services/
+│   ├── run_ocr.py              # OCR service runner
+│   ├── gen_files.py            # Synthetic file generator
+│   └── compare_service.py      # Results evaluation
+└── web/
+    ├── app.py                  # Web interface
+    └── templates/              # HTML templates
+```
+
 ### Generate Synthetic Files
 
 Before creating the OCR process, I focus on creating synthetic PDF files so I would be able to evaluate the OCR pipeline.
@@ -247,6 +268,24 @@ python3 -m ocr_project.web.app
 
 ## Q&A Project Overview
 
+- Healthcare Information Processing: Processes structured healthcare information from HTML
+- Customer Service Integration: Manages customer data and service queries
+- Interactive Interface: Streamlit-based chat interface for healthcare inquiries
+- Dynamic Response Generation: Uses Azure OpenAI for natural language interaction
+
+```
+Q&A/
+├── qna_project/
+│   ├── clients/              # API clients
+│   ├── config/               # Configuration
+│   ├── processors/           # Data processors
+│   ├── services/             # Business logic
+│   └── web/                  # Web interface
+└── resources/
+    ├── prompts/              # System prompts
+    └── raw_html/             # Healthcare information
+```
+
 ### Process HTML Resources
 
 For each HTML file, I extract all information with [html_service.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/Q%26A/qna_project/services/html_service.py) file. As you can see, the providers (Maccabi, Meuhedet, and Clalit) are parsed, along with their plans (gold, silver, and bronze). This will allow us to pass only the relevant information to the user.
@@ -271,27 +310,52 @@ python -m qna_project.services.search_customer
 
 ### Q&A Interface
 
-Along the way i made about 3 versions to this site. 
+#### Stage 1: User Information Collection
+
+![qna_stage_1](images/qna_stage_1.png)
+
+![qna_stage_1_screenshot](images/qna_stage_1_screenshot.png)
+
+#### Stage 2: Data Validation
+
+We ask the user to update the data if there is a mistake.
+
+![qna_stage_2_screenshot](images/qna_stage_2_screenshot.png)
+
+#### Stage 3: User Information Collection
+
+![qna_stage_2](images/qna_stage_3.png)
+
+![qna_stage_3_screenshot](images/qna_stage_3_screenshot.png)
+
+#### Summery: Key Site Features
+
+1. Progressive Information Collection
+   - Step-by-step user data collection
+   - Real-time validation
+   - Friendly error handling
+2. Dynamic Service Information
+   - Provider-specific content
+   - Plan-based filtering
+   - Up-to-date service information
+3. Natural Language Understanding
+   - Context-aware responses
+   - Multilingual support (Hebrew/English)
+   - Query intent recognition
+4. Interactive Interface
+   - Real-time updates
+   - Chat-like interface
+   - Visual feedback
+5. Data Management
+   - Secure data handling
+   - Session persistence
+   - Easy updates
 
 To run the site, use the CLI command:
 
 ```bash
 streamlit run qna_project/web/streamlit/main.py
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Prerequisites
 
@@ -331,118 +395,3 @@ AZURE_DOCUMENT_KEY=your_form_recognizer_key
 AZURE_OPENAI_API_KEY=your_openai_key
 AZURE_OPENAI_ENDPOINT=your_openai_endpoint
 ```
-
-## OCR Project Usage
-
-### 1. Generate Synthetic Files
-Generate synthetic PDF files for testing:
-```bash
-python -m ocr_project.services.gen_files
-```
-
-### 2. Run OCR Processing
-Process the generated PDF files:
-```bash
-python -m ocr_project.services.run_ocr
-```
-
-### 3. Evaluate Results
-Compare OCR results with expected values:
-```bash
-python -m ocr_project.services.compare_service
-```
-
-### 4. Run Web Interface
-Start the OCR web interface:
-```bash
-python -m ocr_project.web.app
-```
-
-## Q&A System Usage
-
-### 1. Process HTML Resources
-Process the HTML files containing healthcare information:
-```bash
-python -m qna_project.services.html_service
-```
-
-### 2. Search Customer Information
-Test customer information search functionality:
-```bash
-python -m qna_project.services.search_customer
-```
-
-### 3. Run Q&A Interface
-Start the Q&A web interface:
-```bash
-streamlit run qna_project/web/streamlit/main.py
-```
-
-## Project Components
-
-### OCR Project
-- Form Processing: Extracts information from healthcare forms using Azure Form Recognizer
-- Field Validation: Validates extracted data against expected formats
-- Web Interface: Flask-based interface for uploading and processing forms
-- Evaluation: Compares extracted data with expected values
-
-### Q&A System
-- Healthcare Information Processing: Processes structured healthcare information from HTML
-- Customer Service Integration: Manages customer data and service queries
-- Interactive Interface: Streamlit-based chat interface for healthcare inquiries
-- Dynamic Response Generation: Uses Azure OpenAI for natural language interaction
-
-## Directory Structure Details
-
-### OCR Project
-```
-ocr_project/
-├── core/
-│   ├── document_analyzer.py    # Azure Form Recognizer integration 
-│   ├── extract_form_fields.py  # Field extraction logic
-│   ├── form_processor.py       # Form processing utilities
-│   └── gpt_client.py           # GPT integration
-├── services/
-│   ├── run_ocr.py              # OCR service runner
-│   ├── gen_files.py            # Synthetic file generator
-│   └── compare_service.py      # Results evaluation
-└── web/
-    ├── app.py                  # Web interface
-    └── templates/              # HTML templates
-```
-
-### Q&A Project
-```
-Q&A/
-├── qna_project/
-│   ├── clients/              # API clients
-│   ├── config/               # Configuration
-│   ├── processors/           # Data processors
-│   ├── services/             # Business logic
-│   └── web/                  # Web interface
-└── resources/
-    ├── prompts/              # System prompts
-    └── raw_html/             # Healthcare information
-```
-
-## Configuration
-
-### OCR Configuration
-- Form templates in `ocr_project/resources/`
-- OCR settings in `ocr_project/config/settings.py`
-- Web interface configuration in `ocr_project/web/app.py`
-
-### Q&A Configuration
-- Healthcare data in `Q&A/resources/raw_html/`
-- Q&A prompts in `Q&A/resources/prompts/`
-- System settings in `Q&A/qna_project/config/settings.py`
-
-## Error Handling
-
-Both systems include comprehensive error handling:
-- Input validation
-- Service connection errors
-- Processing failures
-- Data validation errors
-
-Logs are stored in the respective `logs` directories of each project.
