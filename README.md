@@ -19,7 +19,7 @@ This project consists of two main components:
     └── web/            # Web interface for Q&A system
 ```
 
-## Projects Overview
+## OCR Projects Overview
 
 ### Generate Synthetic Files
 
@@ -217,8 +217,6 @@ form_4.pdf:
   Match rate: 76.32%
 ```
 
-
-
 ### Web Interface
 
 I was asked also to create a UI that enables users to load PDFs and extract the information with the OCR pipeline we just talked about.
@@ -246,6 +244,50 @@ To run the site, use the CLI command:
 ```bash
 python3 -m ocr_project.web.app
 ```
+
+## Q&A Project Overview
+
+### Process HTML Resources
+
+For each HTML file, I extract all information with [html_service.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/Q%26A/qna_project/services/html_service.py) file. As you can see, the providers (Maccabi, Meuhedet, and Clalit) are parsed, along with their plans (gold, silver, and bronze). This will allow us to pass only the relevant information to the user.
+
+![qna_knowledge_creation](images/qna_knowledge_creation.png)
+
+To run the HTML extraction, use the CLI command:
+
+```bash
+python -m qna_project.services.html_service
+```
+
+### Search Customer Information
+
+As I just mentioned, we want to create a method that returns the relavent information by the customer's health provider and plan. The file [search_healthcare.py](https://github.com/ofirsteinherz/ocr-q-a/blob/main/Q%26A/qna_project/services/search_healthcare.py) does it.
+
+To run the search, use the CLI command:
+
+```bash
+python -m qna_project.services.search_customer
+```
+
+### Q&A Interface
+
+Along the way i made about 3 versions to this site. 
+
+To run the site, use the CLI command:
+
+```bash
+streamlit run qna_project/web/streamlit/main.py
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
